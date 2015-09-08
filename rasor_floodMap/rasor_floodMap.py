@@ -1,14 +1,12 @@
-# -*- coding: utf-8 -*-
 """
 /***************************************************************************
- rasor
-                                 A QGIS plugin
- Plugin in order to generate Rasor compliant flood maps using S1 data
-                              -------------------
-        begin                : 2015-03-11
-        git sha              : $Format:%H$
-        copyright            : (C) 2015 by Joan Sala, Alex Lopez
+ A QGIS plugin in order to generate Rasor compliant flood maps from Sentinel-1 Images
+ For the RASOR FP7 Project (http://www.rasor-project.eu/)
+                             -------------------
+        begin                : 2015-08-09
+        copyright            : (C) 2015 by Altamira-Information.com
         email                : joan.sala@altamira-information.com
+        git sha              : $Format:%H$
  ***************************************************************************/
 
 /***************************************************************************
@@ -20,6 +18,7 @@
  *                                                                         *
  ***************************************************************************/
 """
+
 # PyQT4 imports
 from PyQt4.QtCore import *
 from PyQt4.QtGui import *

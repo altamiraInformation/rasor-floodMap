@@ -1,7 +1,7 @@
 #/***************************************************************************
 # rasor
 #
-# Plugin in order to generate Rasor compliant data and upload it to the platform
+# Plugin in order to generate Rasor compliant flood maps from Sentinel-1 Images
 #							 -------------------
 #		begin				: 2015-03-11
 #		git sha				: $Format:%H$

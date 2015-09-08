@@ -1,14 +1,13 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- rasorDialog
-                                 A QGIS plugin
- Plugin in order to generate Rasor flood maps with the S-1 toolbox and gdal.
+ A QGIS plugin in order to generate Rasor compliant flood maps from Sentinel-1 Images
+ For the RASOR FP7 Project (http://www.rasor-project.eu/)
                              -------------------
-        begin                : 2015-06-11
+        begin                : 2015-08-09
+        copyright            : (C) 2015 by Altamira-Information.com
+        email                : joan.sala@altamira-information.com
         git sha              : $Format:%H$
-        copyright            : (C) 2015 by Joan Sala, Alex López
-        email                : joan.sala@altamira-information.com, alex.lopez@altamira-information.com
  ***************************************************************************/
 
 /***************************************************************************

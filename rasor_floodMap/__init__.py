@@ -1,12 +1,11 @@
 # -*- coding: utf-8 -*-
 """
 /***************************************************************************
- rasor
-                                 A QGIS plugin
- Plugin in order to generate Rasor compliant data and upload it to the platform
+ A QGIS plugin in order to generate Rasor compliant flood maps from Sentinel-1 Images
+ For the RASOR FP7 Project (http://www.rasor-project.eu/)
                              -------------------
-        begin                : 2015-03-11
-        copyright            : (C) 2015 by Joan Sala
+        begin                : 2015-08-09
+        copyright            : (C) 2015 by Altamira-Information.com
         email                : joan.sala@altamira-information.com
         git sha              : $Format:%H$
  ***************************************************************************/
@@ -19,9 +18,7 @@
  *   (at your option) any later version.                                   *
  *                                                                         *
  ***************************************************************************/
- This script initializes the plugin, making it known to QGIS.
 """
-
 
 # noinspection PyPep8Naming
 def classFactory(iface):  # pylint: disable=invalid-name
