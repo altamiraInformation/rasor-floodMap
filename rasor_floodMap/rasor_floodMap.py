@@ -126,13 +126,6 @@ class rasor:
 	self.dlg.connect(self.dlg.pushButtLOAD2, SIGNAL("clicked()"), self.loadStep2QGIS)
 	self.dlg.connect(self.dlg.pushButtLOAD3, SIGNAL("clicked()"), self.loadStep3QGIS)
 	
-	# TEST
-	self.dlg.editS1Path.setText('C:\Program Files\S1TBX')
-	self.dlg.editOutPath.setText('C:\Users\joan.ALTAMIRA-INFORM\Desktop\TEST-S1-PLUGIN')
-	self.dlg.editAfter1.setText('C:\Users\joan.ALTAMIRA-INFORM\Desktop\S1A_IW_GRDH_1SDV_20141104T172239_20141104T172304_003135_0039A3_7838.SAFE\manifest.safe')
-	self.dlg.editBefore1.setText('C:\Users\joan.ALTAMIRA-INFORM\Desktop\S1A_IW_GRDH_1SDV_20141116T172239_20141116T172304_003310_003D5C_CA09.SAFE\manifest.safe')
-	self.dlg.editAOI.setText('C:\Users\joan.ALTAMIRA-INFORM\Desktop\TEST-S1-PLUGIN\PO_river_AREA_SMALL.shp')
-	
 	# CLICKED functions
     def buttS1PathCLICK(self):
 	    dir = self.tr(QFileDialog.getExistingDirectory(self.dlg, "Select S1-TBX Directory", self.getWDIR()))
