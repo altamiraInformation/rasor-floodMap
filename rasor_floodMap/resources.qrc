@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/plugins/rasor" >
+        <file>rasor_icon_flood.png</file>
+    </qresource>
+</RCC>

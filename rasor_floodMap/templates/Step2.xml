@@ -1,0 +1,108 @@
+<graph id="Graph">
+  <version>1.0</version>
+  <node id="Before">
+    <operator>Read</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>C:\Users\alex.ALTAMIRA-INFORM\Projects\08.RASOR\01.Sofware\Flood Mapping tool\Output\PO RIVER\Step1-after.tif</file>
+    </parameters>
+  </node>
+  <node id="After">
+    <operator>Read</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>C:\Users\alex.ALTAMIRA-INFORM\Projects\08.RASOR\01.Sofware\Flood Mapping tool\Output\PO RIVER\Step1-before.tif.tif</file>
+    </parameters>
+  </node>
+  <node id="CreateStack">
+    <operator>CreateStack</operator>
+    <sources>
+      <sourceProduct refid="After"/>
+      <sourceProduct refid="Before"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <masterBands/>
+      <sourceBands/>
+      <resamplingType>NONE</resamplingType>
+      <extent>Master</extent>
+      <initialOffsetMethod>ORBIT</initialOffsetMethod>
+    </parameters>
+  </node>
+  <node id="Difference">
+    <operator>BandMaths</operator>
+    <sources>
+      <sourceProduct refid="CreateStack"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <targetBands/>
+      <variables/>
+      <bandName>Difference</bandName>
+      <bandUnit/>
+      <bandNodataValue>0.0</bandNodataValue>
+      <bandExpression>Sigma0_VV_mst_16Nov2014- Sigma0_VV_slv1_04Nov2014</bandExpression>
+    </parameters>
+  </node>
+  <node id="Ratio">
+    <operator>BandMaths</operator>
+    <sources>
+      <sourceProduct refid="CreateStack"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <targetBands/>
+      <variables/>
+      <bandName>Ratio</bandName>
+      <bandUnit/>
+      <bandNodataValue>0.0</bandNodataValue>
+      <bandExpression>Sigma0_VV_mst_16Nov2014 / Sigma0_VV_slv1_04Nov2014</bandExpression>
+    </parameters>
+  </node>
+  <node id="RGB">
+    <operator>CreateStack</operator>
+    <sources>
+      <sourceProduct refid="Difference"/>
+      <sourceProduct refid="Ratio"/>
+      <sourceProduct refid="After"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <masterBands/>
+      <sourceBands/>
+      <resamplingType>NONE</resamplingType>
+      <extent>Master</extent>
+      <initialOffsetMethod>ORBIT</initialOffsetMethod>
+    </parameters>
+  </node>
+  <node id="Write">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="RGB"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file>C:\Users\alex.ALTAMIRA-INFORM\Projects\08.RASOR\01.Sofware\Flood Mapping tool\Output\PO RIVER\RGB.tif</file>
+      <formatName>GeoTIFF</formatName>
+    </parameters>
+  </node>
+  <applicationData id="Presentation">
+    <Description/>
+    <node id="Before">
+      <displayPosition x="36.0" y="76.0"/>
+    </node>
+    <node id="After">
+      <displayPosition x="33.0" y="212.0"/>
+    </node>
+    <node id="CreateStack">
+      <displayPosition x="221.0" y="132.0"/>
+    </node>
+    <node id="Difference">
+      <displayPosition x="496.0" y="60.0"/>
+    </node>
+    <node id="Ratio">
+      <displayPosition x="491.0" y="136.0"/>
+    </node>
+    <node id="RGB">
+      <displayPosition x="752.0" y="138.0"/>
+    </node>
+    <node id="Write">
+      <displayPosition x="946.0" y="139.0"/>
+    </node>
+  </applicationData>
+</graph>

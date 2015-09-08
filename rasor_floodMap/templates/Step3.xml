@@ -1,0 +1,45 @@
+<graph id="Graph">
+  <version>1.0</version>
+  <node id="Read">
+    <operator>Read</operator>
+    <sources/>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file></file>
+    </parameters>
+  </node>
+  <node id="Write">
+    <operator>Write</operator>
+    <sources>
+      <sourceProduct refid="Segmentation"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <file></file>
+      <formatName>GeoTIFF</formatName>
+    </parameters>
+  </node>
+  <node id="Segmentation">
+    <operator>KMeansClusterAnalysis</operator>
+    <sources>
+      <sourceProduct refid="Read"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <clusterCount>14</clusterCount>
+      <iterationCount>30</iterationCount>
+      <randomSeed>31415</randomSeed>
+      <sourceBandNames/>
+      <roiMaskName/>
+    </parameters>
+  </node>
+  <applicationData id="Presentation">
+    <Description/>
+    <node id="Read">
+      <displayPosition x="37.0" y="134.0"/>
+    </node>
+    <node id="Write">
+      <displayPosition x="455.0" y="135.0"/>
+    </node>
+    <node id="Segmentation">
+      <displayPosition x="180.0" y="132.0"/>
+    </node>
+  </applicationData>
+</graph>

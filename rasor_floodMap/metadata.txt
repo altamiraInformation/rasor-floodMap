@@ -1,0 +1,38 @@
+# This file contains metadata for your plugin. Since 
+# version 2.0 of QGIS this is the proper way to supply 
+# information about a plugin. The old method of 
+# embedding metadata in __init__.py will 
+# is no longer supported since version 2.0.
+
+# This file should be included when you package your plugin.# Mandatory items:
+
+[general]
+name=RASOR FloodMap
+qgisMinimumVersion=2.2
+description=Plugin developed for the FP7 RASOR Project (http://www.rasor-project.eu/) 
+about=Able to generate RASOR compliant floodMaps for SENTINEL-1 images. Depends on the SENTINEL-1 toolbox.
+version=1.0
+author=Joan Sala (Altamira-Information), Alex Lopez (Altamira-Information)
+email=joan.sala@altamira-information.com
+
+# End of mandatory metadata
+
+# Recommended items:
+
+# Uncomment the following line and add your changelog:
+# changelog=
+
+# Tags are comma separated with spaces allowed
+tags=RASOR, S1TBX, Sentinel-1, Sentinel, Flood Map, Hydrology, Rasor-Project, FP7
+
+homepage=http://www.rasor-project.eu/
+tracker=https://github.com/jsalcal/rasor-floodMap/issues
+repository=https://github.com/jsalcal/rasor-floodMap
+category=Plugins
+icon=icon.png
+# experimental flag
+experimental=True
+
+# deprecated flag (applies to the whole plugin, not just a single version)
+deprecated=False
+
