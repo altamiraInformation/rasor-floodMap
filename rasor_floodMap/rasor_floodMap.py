@@ -36,6 +36,7 @@ from rasor_step_api import StepTwo
 from rasor_step_api import StepThree
 from rasor_poly_api import Shapefile
 from rasor_gtiff_api import GeoTiff
+from rasor_manifest_api import Manifest
 
 # Initialize Qt resources from file resources.py
 import resources_rc
@@ -118,6 +119,9 @@ class rasor:
 	self.dlg.editRGB3.clear()
 	self.dlg.editRGB3.setReadOnly(1)
 	self.dlg.connect(self.dlg.buttRGB3, SIGNAL("clicked()"), self.buttRGB3CLICK)
+	self.dlg.editSHPClassif.clear()
+	self.dlg.editSHPClassif.setReadOnly(1)
+	self.dlg.connect(self.dlg.buttSHPClassif, SIGNAL("clicked()"), self.buttSHPClassifCLICK)
 	
 	self.dlg.editAOI.clear()
 	self.dlg.editAOI.setReadOnly(1)
@@ -126,38 +130,74 @@ class rasor:
 	self.dlg.connect(self.dlg.pushButtLOAD2, SIGNAL("clicked()"), self.loadStep2QGIS)
 	self.dlg.connect(self.dlg.pushButtLOAD3, SIGNAL("clicked()"), self.loadStep3QGIS)
 	
+	# Load settings
+	s = QSettings()
+	s1tbx_path = s.value("rasor_floodMap/s1tbx_path")
+	work_path = s.value("rasor_floodMap/work_path")
+	shp_path = s.value("rasor_floodMap/shp_path")
+	if shp_path: self.dlg.editAOI.setText(shp_path)
+	if work_path: self.dlg.editOutPath.setText(work_path)
+	if s1tbx_path: self.dlg.editS1Path.setText(s1tbx_path)
+
 	# CLICKED functions
     def buttS1PathCLICK(self):
-	    dir = self.tr(QFileDialog.getExistingDirectory(self.dlg, "Select S1-TBX Directory", self.getWDIR()))
-	    self.dlg.editS1Path.setText(dir)	    
+	    dir = self.tr(QFileDialog.getExistingDirectory(self.dlg, "Select S1-TBX Directory", self.getRootDIR()))
+	    if dir:
+			file_path = dir + "\\gpt.exe"
+			if os.path.exists(file_path):
+				self.dlg.editS1Path.setText(dir)
+				s = QSettings()
+				s.setValue("rasor_floodMap/s1tbx_path", dir)
+			else:
+				error_message = QtGui.QErrorMessage(self.dlg)
+				error_message.setWindowTitle("Wrong directory")
+				error_message.showMessage("Impossible to find the gpt.exe executable in this directory. Please provide another one")
+
     def buttOutPathCLICK(self):
-	    dir = self.tr(QFileDialog.getExistingDirectory(self.dlg, "Select OUTPUT Directory", self.getWDIR()))
-	    self.dlg.editOutPath.setText(dir)	    
+	    dir = self.tr(QFileDialog.getExistingDirectory(self.dlg, "Select OUTPUT Directory", self.getWDIR()))	    
+	    if dir:
+			self.dlg.editOutPath.setText(dir)
+			s = QSettings()
+			s.setValue("rasor_floodMap/work_path", dir)	
     def buttBeforeCLICK1(self):
-	    file = self.tr(QFileDialog.getOpenFileName(self.dlg, "Select S1 image manifest file", self.getWDIR(), "S1 manifest files (manifest.safe)"))
-	    self.dlg.editBefore1.setText(file)
+	    file_path = self.tr(QFileDialog.getOpenFileName(self.dlg, "Select S1 image manifest file_path", self.getWDIR(), "S1 manifest files (manifest.safe)"))
+	    if file_path:
+			self.dlg.editBefore1.setText(file_path)
+			maniReader=Manifest(file_path)			
+			self.dlg.lineEditBefore.setText(maniReader.parseXML())	
     def buttAfterCLICK1(self):
-	    file = self.tr(QFileDialog.getOpenFileName(self.dlg, "Select S1 image manifest file", self.getWDIR(), "S1 manifest files (manifest.safe)"))
-	    self.dlg.editAfter1.setText(file)	    
+	    file_path = self.tr(QFileDialog.getOpenFileName(self.dlg, "Select S1 image manifest file_path", self.getWDIR(), "S1 manifest files (manifest.safe)"))
+	    if file_path:
+			self.dlg.editAfter1.setText(file_path)
+			maniReader=Manifest(file_path)
+			self.dlg.lineEditAfter.setText(maniReader.parseXML())	        
     def buttBeforeCLICK2(self):
-	    file = self.tr(QFileDialog.getOpenFileName(self.dlg, "Select S1 prepared TIF", self.getWDIR(), "S1 prepared tif (*.tif)"))
-	    self.dlg.editBefore2.setText(file)
-	    tiffReader=GeoTiff(file)
-	    self.dlg.lineEditBefore.setText(tiffReader.getDATE())
+	    file_path = self.tr(QFileDialog.getOpenFileName(self.dlg, "Select S1 prepared TIF", self.getWDIR(), "S1 prepared tif (*.tif)"))
+	    if file_path:
+			self.dlg.editBefore2.setText(file_path)
+			#tiffReader=GeoTiff(file_path)
+			#self.dlg.lineEditBefore.setText(tiffReader.getDATE())
     def buttAfterCLICK2(self):
-	    file = self.tr(QFileDialog.getOpenFileName(self.dlg, "Select S1 prepared TIF", self.getWDIR(), "S1 prepared tif (*.tif)"))
-	    self.dlg.editAfter2.setText(file)
-	    tiffReader=GeoTiff(file)
-	    self.dlg.lineEditAfter.setText(tiffReader.getDATE())
+	    file_path = self.tr(QFileDialog.getOpenFileName(self.dlg, "Select S1 prepared TIF", self.getWDIR(), "S1 prepared tif (*.tif)"))
+	    if file_path:
+			self.dlg.editAfter2.setText(file_path)
+			#tiffReader=GeoTiff(file_path)
+			#self.dlg.lineEditAfter.setText(tiffReader.getDATE())
     def buttRGB3CLICK(self):
-	    file = self.tr(QFileDialog.getOpenFileName(self.dlg, "Select RGB tiff from step 2", self.getWDIR(), "S2 prepared tif (*.tif)"))
-	    self.dlg.editRGB3.setText(file)		
+	    file_path = self.tr(QFileDialog.getOpenFileName(self.dlg, "Select RGB tiff from step 2", self.getWDIR(), "S2 prepared tif (*.tif)"))
+	    if file_path:	self.dlg.editRGB3.setText(file_path)
+    def buttSHPClassifCLICK(self):
+	    file_path = self.tr(QFileDialog.getOpenFileName(self.dlg, "Select a SHP", self.getWDIR(), "ESRI Shapefile (*.shp)"))
+	    if file_path:	self.dlg.editSHPClassif.setText(file_path)
     def buttAfterAOI(self):
-	    shp_file = self.tr(QFileDialog.getOpenFileName(self.dlg, "Select Area of Interest SHP", self.getWDIR(), "ESRI Shapefile (*.shp)"))
-	    self.dlg.editAOI.setText(shp_file)
+	    shp_file = self.tr(QFileDialog.getOpenFileName(self.dlg, "Select Area of Interest SHP", self.getWDIR(), "ESRI Shapefile (*.shp)"))	    
+	    if shp_file: 
+			self.dlg.editAOI.setText(shp_file)
+			s = QSettings()
+			s.setValue("rasor_floodMap/shp_path", shp_file)
     def loadStep1QGIS(self):
-		file1=self.get_out_path()+"\\after.tif"
-		file2=self.get_out_path()+"\\before.tif"
+		file1=self.get_out_path()+"\\reference.tif"
+		file2=self.get_out_path()+"\\flood.tif"
 		self.load_raster_QGIS(file1)
 		self.load_raster_QGIS(file2)
     def loadStep2QGIS(self):
@@ -197,7 +237,7 @@ class rasor:
 					rlayer.renderer().rasterTransparency().setTransparentThreeValuePixelList(myTransparencyList)
 					QgsMapLayerRegistry.instance().addMapLayer(rlayer)
 		else:
-			self.show_error('The file '+fileName+' does not exist. Please check your working directory.')
+			self.show_error('The file_path '+fileName+' does not exist. Please check your working directory.')
 	
 	# Run function
     def buttRUNCLICK(self):
@@ -221,21 +261,25 @@ class rasor:
 		wdir = self.dlg.editOutPath.text()
 		if not wdir:
 			wdir = expanduser("~")
-		return wdir
-
+		return wdir	
+    def getRootDIR(self):
+		return os.path.abspath(os.sep)
+		
 	# Called on tab changed event
     def tabChanged(self):
-	    index=self.dlg.tabSteps.currentIndex()
-	    self.dlg.textBrowser.clear()
-	    if index == 0:
-			self.dlg.textBrowser.setText("<b><font color=\"green\">CONFIG:</font></b><br/><br/><b><font color=\"blue\">EXE_DIR:</font></b> Sentinel-1 Toolbox (S1TBX) executables directory (usually C:\Program Files\S1TBX).<br/><b><font color=\"blue\">WORKSPACE:</font></b> Output directory where files will be stored.<br/><b><font color=\"blue\">AOI (Area of Interest):</font></b> One shapefile with an area of interest (polygon)")		
-	    if index == 1:
+		index=self.dlg.tabSteps.currentIndex()
+		self.dlg.textBrowser.clear()
+		self.dlg.pushButtRUN.setText("RUN\nSTEP")
+		if index == 0:
+			self.dlg.pushButtRUN.setText("")
+			self.dlg.textBrowser.setText("<b><font color=\"green\">CONFIG:</font></b><br/><br/><b><font color=\"blue\">EXE_DIR:</font></b> Sentinel-1 Toolbox (S1TBX) executables directory (usually C:\snap\bin).<br/><b><font color=\"blue\">WORKSPACE:</font></b> Output directory where files will be stored.<br/><b><font color=\"blue\">AOI (Area of Interest):</font></b> One shapefile with an area of interest (polygon)")		
+		if index == 1:
 			self.dlg.textBrowser.setText("<b><font color=\"green\">INPUT:</font></b><br/>two manifest files from Sentinel-1 Images, one before the flood event and one after. One shapefile with an area of interest (polygon)<br/><br/><b><font color=\"green\">OUTPUT:</font></b><br/>The two images calibrated, orthorectified and subsetted by the polygon bounding box in GeoTIFF format.")
-	    if index == 2:
+		if index == 2:
 			self.dlg.textBrowser.setText("<b><font color=\"green\">INPUT:</font></b><br/>two Geotiff images alredy processed in the previous step with their associated dates of acquisition.<br/><br/><b><font color=\"green\">OUTPUT:</font></b><br/>RGB composition ready for change detection.")
-	    if index == 3:
+		if index == 3:
 			self.dlg.textBrowser.setText("<b><font color=\"green\">INPUT:</font></b><br/>one RGB Geotiff image with the change detection information from the previous step <br/><br/><b><font color=\"green\">OUTPUT:</font></b><br/> one RGB Geotiff with the segmentation output")
-	    if index == 4:
+		if index == 4:
 			self.dlg.textBrowser.setText("<b><font color=\"green\">INPUT:</font></b><br/> ... <br/><br/><b><font color=\"green\">OUTPUT:</font></b><br/> ... ")
 
     # Called on error
@@ -245,12 +289,16 @@ class rasor:
 	# Called on batch task start
     def start_task(self):
 		# Start progress bar
+		self.dlg.progressGUI.setMinimum(0)
+		self.dlg.progressGUI.setMaximum(0)
 		self.dlg.progressGUI.setValue(0)
 		self.dlg.progressGUI.setTextVisible(True)
 
 	# Called on batch task end
     def end_task(self):
 		# Stop progress bar
+		self.dlg.progressGUI.setMinimum(0)
+		self.dlg.progressGUI.setMaximum(100)
 		self.dlg.progressGUI.setValue(0)
 		self.dlg.progressGUI.setTextVisible(False)
 		# Clear text
@@ -278,7 +326,7 @@ class rasor:
 		workerGUI.finishSIGNAL.connect(self.workerFinishedSLOT)
 		workerGUI.errorSIGNAL.connect(self.workerErrorSLOT)
 		workerGUI.infoSIGNAL.connect(self.workerInfoSLOT)
-		workerGUI.progressSIGNAL.connect(self.dlg.progressGUI.setValue)
+		#workerGUI.progressSIGNAL.connect(self.dlg.progressGUI.setValue)
 
 		# Launch
 		threadGUI.started.connect(workerGUI.run)
@@ -377,13 +425,15 @@ class rasor:
 		else:
 			self.show_error('Please provide a valid TIFF image output from STEP-1 after the flood')
 			return None				
-    def get_date_before_s2(self):
+    def get_date_before_s1(self):
 		return self.dlg.lineEditBefore.text()
-    def get_date_after_s2(self):
+    def get_date_after_s1(self):
 		return self.dlg.lineEditAfter.text()
     def get_image_rgb_cd(self):
 		return self.dlg.editRGB3.text()
-		
+    def get_shp_classif(self):
+		return self.dlg.editSHPClassif.text()
+
 	# Run STEP-1
     def run_step_1(self):	
 		# Gather info for step1
@@ -392,28 +442,33 @@ class rasor:
 		image_after=self.get_image_after_s1()
 		image_before=self.get_image_before_s1()
 		bbox=self.get_polygon_s1()
-		if (s1tbx_path is None) or (output_path is None) or (image_after is None) or (image_before is None) or (bbox is None):	return #Params check
+		date_before=self.get_date_before_s1()
+		date_after=self.get_date_after_s1()
+
+		# Params check
+		if (s1tbx_path is None) or (output_path is None) or (image_after is None) or (image_before is None) or (bbox is None) or (date_after is None) or (date_before is None):	return #Params check
+		if (bbox == -1):
+			self.show_error('Please provide a smaller polygon (shapefile in the CONF tab)')
+			return # Area fail
 		
 		# Write xml for the step
 		xml_step1= self.template_dir+'\Step1.xml'
-		step_one = StepOne(xml_step1, image_before, image_after, bbox, output_path)
+		step_one = StepOne(xml_step1, image_before, image_after, bbox, output_path, date_before, date_after)
 		step_one.write_xml()
-		xmlStepB=output_path.replace('\\', '\\\\')+'\\\\Step1-before.xml'
-		xmlStepA=output_path.replace('\\', '\\\\')+'\\\\Step1-after.xml'
+		xmlStep=output_path.replace('\\', '\\\\')+'\\\\Step1.xml'
 	
 		# Start worker on a new thread
-		self.startWorker(str(s1tbx_path), str(xmlStepB), str(xmlStepA))
+		self.startWorker(str(s1tbx_path), str(xmlStep), str(""))
 	
 	# Run STEP-2
     def run_step_2(self):
-		# Gather info for step1
+		# Gather info for step2
 		s1tbx_path=self.get_s1_path()
 		output_path=self.get_out_path()
 		image_after=self.get_image_after_s2()
 		image_before=self.get_image_before_s2()
-		date_before=self.get_date_before_s2()
-		date_after=self.get_date_after_s2()
-		if (s1tbx_path is None) or (output_path is None) or (image_after is None) or (image_before is None) or (date_after is None) or (date_before is None):	return #Params check
+
+		if (s1tbx_path is None) or (output_path is None) or (image_after is None) or (image_before is None):	return #Params check
 		
 		# Write xml for the step
 		xml_step2= self.template_dir+'\Step2.xml'
@@ -426,7 +481,7 @@ class rasor:
 	
 	# Run STEP-3
     def run_step_3(self):
-		# Gather info for step1
+		# Gather info for step3
 		s1tbx_path=self.get_s1_path()
 		output_path=self.get_out_path()
 		image_rgb_cd=self.get_image_rgb_cd()

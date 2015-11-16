@@ -4,14 +4,14 @@
     <operator>Read</operator>
     <sources/>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <file>C:\Users\alex.ALTAMIRA-INFORM\Projects\08.RASOR\01.Sofware\Flood Mapping tool\Output\PO RIVER\Step1-after.tif</file>
+      <file></file>
     </parameters>
   </node>
   <node id="After">
     <operator>Read</operator>
     <sources/>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <file>C:\Users\alex.ALTAMIRA-INFORM\Projects\08.RASOR\01.Sofware\Flood Mapping tool\Output\PO RIVER\Step1-before.tif.tif</file>
+      <file></file>
     </parameters>
   </node>
   <node id="CreateStack">
@@ -38,8 +38,8 @@
       <variables/>
       <bandName>Difference</bandName>
       <bandUnit/>
-      <bandNodataValue>0.0</bandNodataValue>
-      <bandExpression>Sigma0_VV_mst_16Nov2014- Sigma0_VV_slv1_04Nov2014</bandExpression>
+      <bandNodataValue>9999</bandNodataValue>
+      <bandExpression></bandExpression>
     </parameters>
   </node>
   <node id="Ratio">
@@ -52,8 +52,8 @@
       <variables/>
       <bandName>Ratio</bandName>
       <bandUnit/>
-      <bandNodataValue>0.0</bandNodataValue>
-      <bandExpression>Sigma0_VV_mst_16Nov2014 / Sigma0_VV_slv1_04Nov2014</bandExpression>
+      <bandNodataValue>9999</bandNodataValue>
+      <bandExpression></bandExpression>
     </parameters>
   </node>
   <node id="RGB">
@@ -77,7 +77,7 @@
       <sourceProduct refid="RGB"/>
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <file>C:\Users\alex.ALTAMIRA-INFORM\Projects\08.RASOR\01.Sofware\Flood Mapping tool\Output\PO RIVER\RGB.tif</file>
+      <file></file>
       <formatName>GeoTIFF</formatName>
     </parameters>
   </node>

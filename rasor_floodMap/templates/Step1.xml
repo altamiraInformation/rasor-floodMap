@@ -1,171 +1,219 @@
 <graph id="Graph">
-  <version>1.0</version>
-  <node id="Read">
-    <operator>Read</operator>
-    <sources/>
-    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <file>C:\Users\alex.ALTAMIRA-INFORM\Projects\08.RASOR\01.Sofware\Flood Mapping tool\Input\\PO RIVER\S1A_IW_GRDH_1SDV_20141104T172239_20141104T172304_003135_0039A3_7838.SAFE\manifest.safe</file>
-    </parameters>
-  </node>
-  <node id="Calibration">
-    <operator>Calibration</operator>
-    <sources>
-      <sourceProduct refid="Read"/>
-    </sources>
-    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <sourceBands/>
-      <auxFile>Product Auxiliary File</auxFile>
-      <externalAuxFile/>
-      <outputImageInComplex>false</outputImageInComplex>
-      <outputImageScaleInDb>false</outputImageScaleInDb>
-      <createGammaBand>false</createGammaBand>
-      <createBetaBand>false</createBetaBand>
-      <selectedPolarisations>VV</selectedPolarisations>
-      <outputSigmaBand>true</outputSigmaBand>
-      <outputGammaBand>false</outputGammaBand>
-      <outputBetaBand>false</outputBetaBand>
-      <outputDNBand>false</outputDNBand>
-    </parameters>
-  </node>
-  <node id="Subset">
-    <operator>Subset</operator>
-    <sources>
-      <sourceProduct refid="Calibration"/>
-    </sources>
-    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <sourceBands/>
-      <region>0,0,25834,16712</region>
-      <geoRegion>POLYGON ((8.3261137008667 45.214542388916016, 9.16409683227539 45.214542388916016, 9.16409683227539 44.98432922363281, 8.3261137008667 44.98432922363281, 8.3261137008667 45.214542388916016))</geoRegion>
-      <subSamplingX>1</subSamplingX>
-      <subSamplingY>1</subSamplingY>
-      <fullSwath>false</fullSwath>
-      <tiePointGridNames/>
-      <copyMetadata>true</copyMetadata>
-    </parameters>
-  </node>
-  <node id="SAR-Simulation">
-    <operator>SAR-Simulation</operator>
-    <sources>
-      <sourceProduct refid="Subset"/>
-    </sources>
-    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <sourceBands/>
-      <demName>SRTM 3Sec</demName>
-      <demResamplingMethod>BICUBIC_INTERPOLATION</demResamplingMethod>
-      <externalDEMFile/>
-      <externalDEMNoDataValue>0.0</externalDEMNoDataValue>
-      <saveLayoverShadowMask>false</saveLayoverShadowMask>
-    </parameters>
-  </node>
-  <node id="GCP-Selection">
-    <operator>GCP-Selection</operator>
-    <sources>
-      <sourceProduct refid="SAR-Simulation"/>
-    </sources>
-    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <numGCPtoGenerate>209</numGCPtoGenerate>
-      <coarseRegistrationWindowWidth>64</coarseRegistrationWindowWidth>
-      <coarseRegistrationWindowHeight>64</coarseRegistrationWindowHeight>
-      <rowInterpFactor>2</rowInterpFactor>
-      <columnInterpFactor>2</columnInterpFactor>
-      <maxIteration>2</maxIteration>
-      <gcpTolerance>0.5</gcpTolerance>
-      <applyFineRegistration>true</applyFineRegistration>
-      <fineRegistrationWindowWidth>32</fineRegistrationWindowWidth>
-      <fineRegistrationWindowHeight>32</fineRegistrationWindowHeight>
-      <coherenceWindowSize>3</coherenceWindowSize>
-      <coherenceThreshold>0.6</coherenceThreshold>
-      <useSlidingWindow>false</useSlidingWindow>
-      <computeOffset>false</computeOffset>
-      <onlyGCPsOnLand>false</onlyGCPsOnLand>
-    </parameters>
-  </node>
-  <node id="SARSim-Terrain-Correction">
-    <operator>SARSim-Terrain-Correction</operator>
-    <sources>
-      <sourceProduct refid="GCP-Selection"/>
-    </sources>
-    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <rmsThreshold>1.0</rmsThreshold>
-      <warpPolynomialOrder>1</warpPolynomialOrder>
-      <imgResamplingMethod>BILINEAR_INTERPOLATION</imgResamplingMethod>
-      <pixelSpacingInMeter>10.0</pixelSpacingInMeter>
-      <pixelSpacingInDegree>8.983152841195215E-5</pixelSpacingInDegree>
-      <mapProjection>GEOGCS[&quot;WGS84(DD)&quot;, 
-  DATUM[&quot;WGS84&quot;, 
-    SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], 
-  PRIMEM[&quot;Greenwich&quot;, 0.0], 
-  UNIT[&quot;degree&quot;, 0.017453292519943295], 
-  AXIS[&quot;Geodetic longitude&quot;, EAST], 
-  AXIS[&quot;Geodetic latitude&quot;, NORTH]]</mapProjection>
-      <saveDEM>false</saveDEM>
-      <saveLatLon>false</saveLatLon>
-      <saveLocalIncidenceAngle>false</saveLocalIncidenceAngle>
-      <saveProjectedLocalIncidenceAngle>false</saveProjectedLocalIncidenceAngle>
-      <saveSelectedSourceBand>true</saveSelectedSourceBand>
-      <applyRadiometricNormalization>false</applyRadiometricNormalization>
-      <saveSigmaNought>false</saveSigmaNought>
-      <saveGammaNought>false</saveGammaNought>
-      <saveBetaNought>false</saveBetaNought>
-      <incidenceAngleForSigma0>Use projected local incidence angle from DEM</incidenceAngleForSigma0>
-      <incidenceAngleForGamma0>Use projected local incidence angle from DEM</incidenceAngleForGamma0>
-      <auxFile>Latest Auxiliary File</auxFile>
-      <externalAuxFile/>
-      <openShiftsFile>false</openShiftsFile>
-      <openResidualsFile>false</openResidualsFile>
-    </parameters>
-  </node>
-  <node id="Speckle-Filter">
-    <operator>Speckle-Filter</operator>
-    <sources>
-      <sourceProduct refid="SARSim-Terrain-Correction"/>
-    </sources>
-    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <sourceBands/>
-      <filter>Gamma Map</filter>
-      <filterSizeX>3</filterSizeX>
-      <filterSizeY>3</filterSizeY>
-      <dampingFactor>2</dampingFactor>
-      <edgeThreshold>5000.0</edgeThreshold>
-      <estimateENL>true</estimateENL>
-      <enl>1.0</enl>
-    </parameters>
-  </node>
-  <node id="Write">
-    <operator>Write</operator>
-    <sources>
-      <sourceProduct refid="Speckle-Filter"/>
-    </sources>
-    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <file>C:\Users\alex.ALTAMIRA-INFORM\Projects\08.RASOR\01.Sofware\Flood Mapping tool\Output\PO RIVER\S1A_IW_GRDH_1SDV_20141104T172239_20141104T172304_003135_0039A3_7838_SimTC_Despeckle.tif</file>
-      <formatName>GeoTIFF</formatName>
-    </parameters>
-  </node>
-  <applicationData id="Presentation">
-    <Description/>
+    <version>1.0</version>
     <node id="Read">
-            <displayPosition x="126.0" y="111.0"/>
+        <operator>Read</operator>
+        <sources/>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <file>/mnt/DATA8/PRODUCTION/ACTIVE/TESTS_FLOOD_DAX/Input/S1A_IW_GRDH_1SDV_20141112T175507_20141112T175532_003252_003C20_95D2.SAFE/manifest.safe</file>
+        </parameters>
+    </node>
+    <node id="Read2">
+        <operator>Read</operator>
+        <sources/>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <file>/mnt/DATA8/PRODUCTION/ACTIVE/TESTS_FLOOD_DAX/Input/S1A_IW_GRDH_1SDV_20150228T175505_20150228T175530_004827_006011_433B.SAFE/manifest.safe</file>
+        </parameters>
     </node>
     <node id="Calibration">
-            <displayPosition x="236.0" y="110.0"/>
+        <operator>Calibration</operator>
+        <sources>
+            <sourceProduct refid="Read" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <sourceBands/>
+            <auxFile>Product Auxiliary File</auxFile>
+            <externalAuxFile/>
+            <outputImageInComplex>false</outputImageInComplex>
+            <outputImageScaleInDb>false</outputImageScaleInDb>
+            <createGammaBand>false</createGammaBand>
+            <createBetaBand>false</createBetaBand>
+            <selectedPolarisations>VV</selectedPolarisations>
+            <outputSigmaBand>true</outputSigmaBand>
+            <outputGammaBand>false</outputGammaBand>
+            <outputBetaBand>false</outputBetaBand>
+            <outputDNBand>false</outputDNBand>
+        </parameters>
+    </node>
+    <node id="Calibration2">
+        <operator>Calibration</operator>
+        <sources>
+            <sourceProduct refid="Read2" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <sourceBands/>
+            <auxFile>Product Auxiliary File</auxFile>
+            <externalAuxFile/>
+            <outputImageInComplex>false</outputImageInComplex>
+            <outputImageScaleInDb>false</outputImageScaleInDb>
+            <createGammaBand>false</createGammaBand>
+            <createBetaBand>false</createBetaBand>
+            <selectedPolarisations>VV</selectedPolarisations>
+            <outputSigmaBand>true</outputSigmaBand>
+            <outputGammaBand>false</outputGammaBand>
+            <outputBetaBand>false</outputBetaBand>
+            <outputDNBand>false</outputDNBand>
+        </parameters>
     </node>
     <node id="Subset">
-            <displayPosition x="357.0" y="109.0"/>
+        <operator>Subset</operator>
+        <sources>
+            <sourceProduct refid="Calibration" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <sourceBands>Sigma0_VV</sourceBands>
+            <geoRegion>POLYGON ((-1.390540361404419 43.90915298461914, 0.1696255803108215 43.90915298461914, 0.1696255803108215 43.23019027709961, -1.390540361404419 43.23019027709961, -1.390540361404419 43.90915298461914))</geoRegion>
+            <subSamplingX>1</subSamplingX>
+            <subSamplingY>1</subSamplingY>
+            <fullSwath>false</fullSwath>
+            <tiePointGridNames/>
+            <copyMetadata>true</copyMetadata>
+        </parameters>
     </node>
-    <node id="SAR-Simulation">
-            <displayPosition x="458.0" y="109.0"/>
+    <node id="Subset2">
+        <operator>Subset</operator>
+        <sources>
+            <sourceProduct refid="Calibration2" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <sourceBands>Sigma0_VV</sourceBands>
+            <geoRegion>POLYGON ((-1.390540361404419 43.90915298461914, 0.1696255803108215 43.90915298461914, 0.1696255803108215 43.23019027709961, -1.390540361404419 43.23019027709961, -1.390540361404419 43.90915298461914))</geoRegion>
+            <subSamplingX>1</subSamplingX>
+            <subSamplingY>1</subSamplingY>
+            <fullSwath>false</fullSwath>
+            <tiePointGridNames/>
+            <copyMetadata>true</copyMetadata>
+        </parameters>
     </node>
     <node id="GCP-Selection">
-            <displayPosition x="621.0" y="109.0"/>
+        <operator>GCP-Selection</operator>
+        <sources>
+            <sourceProduct refid="CreateStack" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <numGCPtoGenerate>2000</numGCPtoGenerate>
+            <coarseRegistrationWindowWidth>128</coarseRegistrationWindowWidth>
+            <coarseRegistrationWindowHeight>128</coarseRegistrationWindowHeight>
+            <rowInterpFactor>2</rowInterpFactor>
+            <columnInterpFactor>2</columnInterpFactor>
+            <maxIteration>10</maxIteration>
+            <gcpTolerance>0.5</gcpTolerance>
+            <applyFineRegistration>true</applyFineRegistration>
+            <fineRegistrationWindowWidth>32</fineRegistrationWindowWidth>
+            <fineRegistrationWindowHeight>32</fineRegistrationWindowHeight>
+            <coherenceWindowSize>3</coherenceWindowSize>
+            <coherenceThreshold>0.6</coherenceThreshold>
+            <useSlidingWindow>false</useSlidingWindow>
+            <computeOffset>false</computeOffset>
+            <onlyGCPsOnLand>true</onlyGCPsOnLand>
+        </parameters>
     </node>
-    <node id="SARSim-Terrain-Correction">
-            <displayPosition x="761.0" y="109.0"/>
+    <node id="Warp">
+        <operator>Warp</operator>
+        <sources>
+            <sourceProduct refid="GCP-Selection" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <rmsThreshold>0.5</rmsThreshold>
+            <warpPolynomialOrder>1</warpPolynomialOrder>
+            <interpolationMethod>Bilinear interpolation</interpolationMethod>
+            <excludeMaster>false</excludeMaster>
+            <openResidualsFile>false</openResidualsFile>
+        </parameters>
     </node>
-    <node id="Speckle-Filter">
-            <displayPosition x="991.0" y="109.0"/>
+    <node id="BandSelect">
+        <operator>BandSelect</operator>
+        <sources>
+            <sourceProduct refid="Warp" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <selectedPolarisations/>
+            <sourceBands>Sigma0_VV_slv1_12Nov2014</sourceBands>
+        </parameters>
+    </node>
+    <node id="BandSelect2">
+        <operator>BandSelect</operator>
+        <sources>
+            <sourceProduct refid="Warp" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <selectedPolarisations/>
+            <sourceBands>Sigma0_VV_mst_28Feb2015</sourceBands>
+        </parameters>
+    </node>
+    <node id="CreateStack">
+        <operator>CreateStack</operator>
+        <sources>
+            <sourceProduct refid="Subset2" />
+            <sourceProduct.1 refid="Subset" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <masterBands/>
+            <sourceBands/>
+            <resamplingType>NONE</resamplingType>
+            <extent>Master</extent>
+            <initialOffsetMethod>ORBIT</initialOffsetMethod>
+        </parameters>
+    </node>
+    <node id="Write2">
+        <operator>Write</operator>
+        <sources>
+            <sourceProduct refid="BandSelect2" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <file>/mnt/DATA8/PRODUCTION/ACTIVE/TESTS_FLOOD_DAX/Output/Flood.tif</file>
+            <formatName>GeoTIFF</formatName>
+        </parameters>
     </node>
     <node id="Write">
-            <displayPosition x="1120.0" y="111.0"/>
+        <operator>Write</operator>
+        <sources>
+            <sourceProduct refid="BandSelect" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <file>/mnt/DATA8/PRODUCTION/ACTIVE/TESTS_FLOOD_DAX/Output/Reference.tif</file>
+            <formatName>GeoTIFF</formatName>
+        </parameters>
     </node>
-  </applicationData>
+    <applicationData id="Presentation">
+        <Description/>
+        <node id="Read">
+            <displayPosition x="48.0" y="99.0" />
+        </node>
+        <node id="Read2">
+            <displayPosition x="49.0" y="151.0" />
+        </node>
+        <node id="Calibration">
+            <displayPosition x="154.0" y="99.0" />
+        </node>
+        <node id="Calibration2">
+            <displayPosition x="146.0" y="151.0" />
+        </node>
+        <node id="Subset">
+            <displayPosition x="272.0" y="99.0" />
+        </node>
+        <node id="Subset2">
+            <displayPosition x="277.0" y="151.0" />
+        </node>
+        <node id="GCP-Selection">
+            <displayPosition x="565.0" y="124.0" />
+        </node>
+        <node id="Warp">
+            <displayPosition x="755.0" y="127.0" />
+        </node>
+        <node id="BandSelect">
+            <displayPosition x="868.0" y="96.0" />
+        </node>
+        <node id="BandSelect2">
+            <displayPosition x="866.0" y="171.0" />
+        </node>
+        <node id="CreateStack">
+            <displayPosition x="422.0" y="126.0" />
+        </node>
+        <node id="Write2">
+            <displayPosition x="1030.0" y="169.0" />
+        </node>
+        <node id="Write">
+            <displayPosition x="1029.0" y="99.0" />
+        </node>
+    </applicationData>
 </graph>

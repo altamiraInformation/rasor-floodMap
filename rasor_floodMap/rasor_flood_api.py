@@ -38,7 +38,7 @@ class StepWorker(QtCore.QObject):
 		self.ret = True
 	
 	# Build S1-CMD
-    def build_cmd(self, xmlFile):
+    def build_cmd_old_s1tbx(self, xmlFile):
 		args = [
 				self.s1dir.replace(r'\\', r'\\\\')+"\\jre\\bin\\java.exe",
 				"-Xms512M",
@@ -63,11 +63,18 @@ class StepWorker(QtCore.QObject):
 		]
 		return args
 	
+	# Build S1-CMD
+    def build_cmd(self, xmlFile):
+		args = [
+				self.s1dir.replace(r'\\', r'\\\\')+"\\gpt.exe",
+				xmlFile		
+		]
+		return args
+
 	# Execute
     def execute(self, args, mod_env, tmpdir, info):
 		## Show user start info
 		self.infoSIGNAL.emit(info)
-		self.progressSIGNAL.emit(5)
 		## Execute command
 		pro = subprocess.Popen(args,								 
 							 bufsize=0,
@@ -80,16 +87,16 @@ class StepWorker(QtCore.QObject):
 		self.pro = pro
 		## Standard Output Loop	
 		line = ""
-		last_per = 0
+		#last_per = 0
 		while pro.poll() is None:
 			char = pro.stdout.read(1) 
 			line=line+char
-			per=self.get_percent(line)
-			if per < last_per: line = line+'<br>'
-			last_per=per
+			#per=self.get_percent(line)
+			#if per < last_per: line = line+'<br>'
+			#last_per=per
 			# Communicate with GUI
 			self.infoSIGNAL.emit(info+'<br>'+line)			
-			if per:	self.progressSIGNAL.emit(per)			
+			#if per:	self.progressSIGNAL.emit(per)			
 			time.sleep(0.15)
 		print line
 
@@ -107,7 +114,7 @@ class StepWorker(QtCore.QObject):
 			# Build commands (1 or 2 xml files)
 			args=self.build_cmd(self.xmlFileB)
 			self.execute(args, mod_env, tmpdir, 'Working ... ')	
-			self.progressSIGNAL.emit(0)
+			#self.progressSIGNAL.emit(0)
 			if self.xmlFileA: 
 				args2=self.build_cmd(self.xmlFileA)
 				self.execute(args2, mod_env, tmpdir, 'Working on the second image ... ')
