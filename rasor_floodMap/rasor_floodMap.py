@@ -455,7 +455,7 @@ class rasor:
 		xml_step1= self.template_dir+'\Step1.xml'
 		step_one = StepOne(xml_step1, image_before, image_after, bbox, output_path, date_before, date_after)
 		step_one.write_xml()
-		xmlStep=output_path.replace('\\', '\\\\')+'\\\\Step1.xml'
+		xmlStep=output_path.replace('\\', '\\\\')+'\\\\Step1a.xml'
 	
 		# Start worker on a new thread
 		self.startWorker(str(s1tbx_path), str(xmlStep), str(""))

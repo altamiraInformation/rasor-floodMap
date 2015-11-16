@@ -1,13 +1,13 @@
 <graph id="Graph">
   <version>1.0</version>
-  <node id="Before">
+  <node id="Read-Flood">
     <operator>Read</operator>
     <sources/>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
       <file></file>
     </parameters>
   </node>
-  <node id="After">
+  <node id="Read-Reference">
     <operator>Read</operator>
     <sources/>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
@@ -17,8 +17,8 @@
   <node id="CreateStack">
     <operator>CreateStack</operator>
     <sources>
-      <sourceProduct refid="After"/>
-      <sourceProduct refid="Before"/>
+      <sourceProduct refid="Read-Flood"/>
+      <sourceProduct.1 refid="Read-Reference"/>
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
       <masterBands/>
@@ -28,40 +28,69 @@
       <initialOffsetMethod>ORBIT</initialOffsetMethod>
     </parameters>
   </node>
-  <node id="Difference">
+  <node id="BandMaths-Difference">
     <operator>BandMaths</operator>
     <sources>
       <sourceProduct refid="CreateStack"/>
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <targetBands/>
+      <targetBands>
+        <targetBand>
+          <name>Difference</name>
+          <type>float32</type>
+          <expression></expression>
+          <description/>
+          <unit/>
+          <noDataValue>0.0</noDataValue>
+        </targetBand>
+      </targetBands>
       <variables/>
-      <bandName>Difference</bandName>
-      <bandUnit/>
-      <bandNodataValue>9999</bandNodataValue>
-      <bandExpression></bandExpression>
     </parameters>
   </node>
-  <node id="Ratio">
+  <node id="BandMaths-Ratio">
     <operator>BandMaths</operator>
     <sources>
       <sourceProduct refid="CreateStack"/>
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <targetBands/>
+      <targetBands>
+        <targetBand>
+          <name>Ratio</name>
+          <type>float32</type>
+          <expression></expression>
+          <description/>
+          <unit/>
+          <noDataValue>0.0</noDataValue>
+        </targetBand>
+      </targetBands>
       <variables/>
-      <bandName>Ratio</bandName>
-      <bandUnit/>
-      <bandNodataValue>9999</bandNodataValue>
-      <bandExpression></bandExpression>
     </parameters>
   </node>
-  <node id="RGB">
+  <node id="BandMaths-Flood">
+    <operator>BandMaths</operator>
+    <sources>
+      <sourceProduct refid="CreateStack"/>
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+      <targetBands>
+        <targetBand>
+          <name>Flood</name>
+          <type>float32</type>
+          <expression></expression>
+          <description/>
+          <unit/>
+          <noDataValue>0.0</noDataValue>
+        </targetBand>
+      </targetBands>
+      <variables/>
+    </parameters>
+  </node>
+  <node id="CreateStack-RGB">
     <operator>CreateStack</operator>
     <sources>
-      <sourceProduct refid="Difference"/>
-      <sourceProduct refid="Ratio"/>
-      <sourceProduct refid="After"/>
+      <sourceProduct refid="BandMaths-Difference"/>
+      <sourceProduct.1 refid="BandMaths-Ratio"/>
+      <sourceProduct.2 refid="BandMaths-Flood"/>
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
       <masterBands/>
@@ -71,10 +100,10 @@
       <initialOffsetMethod>ORBIT</initialOffsetMethod>
     </parameters>
   </node>
-  <node id="Write">
+  <node id="Write-RGB">
     <operator>Write</operator>
     <sources>
-      <sourceProduct refid="RGB"/>
+      <sourceProduct refid="CreateStack-RGB"/>
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
       <file></file>
@@ -83,26 +112,29 @@
   </node>
   <applicationData id="Presentation">
     <Description/>
-    <node id="Before">
-      <displayPosition x="36.0" y="76.0"/>
+    <node id="Read-Flood">
+            <displayPosition x="34.0" y="108.0"/>
     </node>
-    <node id="After">
-      <displayPosition x="33.0" y="212.0"/>
+    <node id="Read-Reference">
+      <displayPosition x="30.0" y="205.0"/>
     </node>
     <node id="CreateStack">
-      <displayPosition x="221.0" y="132.0"/>
+      <displayPosition x="146.0" y="143.0"/>
     </node>
-    <node id="Difference">
-      <displayPosition x="496.0" y="60.0"/>
+    <node id="BandMaths-Difference">
+      <displayPosition x="321.0" y="81.0"/>
     </node>
-    <node id="Ratio">
-      <displayPosition x="491.0" y="136.0"/>
+    <node id="BandMaths-Ratio">
+      <displayPosition x="320.0" y="154.0"/>
     </node>
-    <node id="RGB">
-      <displayPosition x="752.0" y="138.0"/>
+    <node id="BandMaths-Flood">
+      <displayPosition x="321.0" y="211.0"/>
     </node>
-    <node id="Write">
-      <displayPosition x="946.0" y="139.0"/>
+    <node id="CreateStack-RGB">
+      <displayPosition x="512.0" y="142.0"/>
+    </node>
+    <node id="Write-RGB">
+            <displayPosition x="773.0" y="139.0"/>
     </node>
   </applicationData>
 </graph>
