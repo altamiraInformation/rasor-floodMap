@@ -22,92 +22,138 @@
 import xml.etree.ElementTree as ET
 import os
 
+
 class StepOne:
     """
     Step One of the processing Chain (Calibration + Subset + Despeckle)
     """
 
-    def __init__(self, xml_file_path, image_before_path, image_after_path, subset, output_path, date_before, date_after):
-        self.xml_file_path = xml_file_path
-        self.xml_path = os.path.dirname(xml_file_path)
-        self.image_before_path = image_before_path
-        self.image_after_path = image_after_path
+    def __init__(self, xml_step1a_file, xml_step1b_file, image_reference_path, image_flood_path, subset, output_path, date_reference, date_flood):
+        self.xml_step1a_file = xml_step1a_file
+        self.xml_step1a_path = os.path.dirname(xml_step1a_file)
+        self.xml_step1b_file = xml_step1b_file
+        self.xml_step1b_path = os.path.dirname(xml_step1b_file)
+        self.image_reference_path = image_reference_path
+        self.image_flood_path = image_flood_path
         self.output_path = output_path
         self.subset = subset
-        self.date_after = date_after
-        self.date_before = date_before		
+        self.date_flood = date_flood
+        self.date_reference = date_reference
 
     def write_xml(self):
-        print "## Step 1: Create xml for before and after flooding images processing"
-        print "#### Using " + self.xml_file_path
-        tree = ET.parse(self.xml_file_path)
+        print "## Step 1a: Create xml Calibration and Co-registration"
+        print "#### Using " + self.xml_step1a_file
+        tree = ET.parse(self.xml_step1a_file)
         root = tree.getroot()
 
+        # For each node set the parameters based on the python plugin input
         for node in root.findall('node'):
-            # For each node set the parameters based on the python plugin input
-            if node.attrib.get('id') == 'Read':
+            if node.attrib.get('id') == 'Read-Reference':
                 parameters = node.find("parameters")
-                # set input file name
                 filename = parameters.find("file")
-                filename.text = self.image_before_path
-                print "#### Image before  flood event path " + filename.text
-            # For each node set the parameters based on the python plugin input
-            elif node.attrib.get('id') == 'Read2':
+                filename.text = self.image_reference_path
+                print "#### Reference image path " + filename.text
+            elif node.attrib.get('id') == 'Read-Flood':
                 parameters = node.find("parameters")
-                # set input file name
                 filename = parameters.find("file")
-                filename.text = self.image_after_path
-                print "Image after flood event path " + filename.text				
-            elif node.attrib.get('id') == 'Calibration':
+                filename.text = self.image_flood_path
+                print "#### Flood image path " + filename.text
+            elif node.attrib.get('id') == 'Calibration-Reference':
+                print "#### Calibration-Reference does not require parameters"
+            elif node.attrib.get('id') == 'Calibration-Flood':
+                print "#### Calibration-Flood does not require parameters"
+            elif node.attrib.get('id') == 'Subset-Reference':
                 parameters = node.find("parameters")
-                print "#### Calibration do not require parameters"
-            elif node.attrib.get('id') == 'Calibration2':
-                parameters = node.find("parameters")
-                print "#### Calibration do not require parameters"				
-            elif node.attrib.get('id') == 'Subset':
-                parameters = node.find("parameters")
-                # region = parameters.find("region")
                 geo_region = parameters.find("geoRegion")
                 geo_region.text = self.subset
-                print "#### Subset changed"
-            elif node.attrib.get('id') == 'Subset2':
+                print "#### Subset Reference changed"
+            elif node.attrib.get('id') == 'Subset-Flood':
                 parameters = node.find("parameters")
-                # region = parameters.find("region")
                 geo_region = parameters.find("geoRegion")
-                # region.text =
                 geo_region.text = self.subset
-                print "#### Subset changed"	
+                print "#### Subset Flood changed"
             elif node.attrib.get('id') == 'CreateStack':
-                parameters = node.find("parameters")
-                print "#### CreateStack do not require parameters"					
+                print "#### CreateStack does not require parameters"
             elif node.attrib.get('id') == 'GCP-Selection':
-                parameters = node.find("parameters")
-                print "#### GCP-Selection do not require parameters"
+                print "#### GCP-Selection does not require parameters"
             elif node.attrib.get('id') == 'Warp':
+                print "#### Warp do not require parameters"
+            elif node.attrib.get('id') == 'BandSelect-Reference':
                 parameters = node.find("parameters")
-                print "#### Warp do not require parameters"		
-            elif node.attrib.get('id') == 'BandSelect':
+                source_bands = parameters.find("sourceBands")
+                source_bands.text = "Sigma0_VV_slv1_" + self.date_reference
+                print "#### Reference image band name: " + source_bands.text
+            elif node.attrib.get('id') == 'BandSelect-Flood':
                 parameters = node.find("parameters")
-                sourceBands = parameters.find("sourceBands")
-                sourceBands.text = "Sigma0_VV_slv1_" + self.date_before
-            elif node.attrib.get('id') == 'BandSelect2':
+                source_bands = parameters.find("sourceBands")
+                source_bands.text = "Sigma0_VV_mst_" + self.date_flood
+                print "#### Flood image band name: " + source_bands.text
+            elif node.attrib.get('id') == 'Write-Reference':
                 parameters = node.find("parameters")
-                sourceBands = parameters.find("sourceBands")
-                sourceBands.text = "Sigma0_VV_mst_" + self.date_after				
-            elif node.attrib.get('id') == 'Write':
-                parameters = node.find("parameters")
-                # set input file name
                 filename = parameters.find("file")
-                filename.text = self.output_path + "\\reference.tif"
-                print "#### Image output before flood event path " + filename.text
-            elif node.attrib.get('id') == 'Write2':
+                filename.text = self.output_path + "\\Reference.tif"
+                print "#### Reference Image output file " + filename.text
+            elif node.attrib.get('id') == 'Write-Flood':
                 parameters = node.find("parameters")
-                # set input file name
                 filename = parameters.find("file")
-                filename.text = self.output_path + "\\flood.tif"
-                print "Image output after flood event  path " + filename.text
+                filename.text = self.output_path + "\\Flood.tif"
+                print "#### Flood Image output file" + filename.text
 
-        tree.write(self.output_path+'/Step1.xml')
+        tree.write(self.output_path+'/Step1a.xml')
+
+        print "## Step 1b: Create xml for Subset and Orthorectification (quicklook)"
+        print "#### Using " + self.xml_step1b_file
+        tree = ET.parse(self.xml_step1b_file)
+        root = tree.getroot()
+
+        # For each node set the parameters based on the python plugin input
+        for node in root.findall('node'):
+            if node.attrib.get('id') == 'Read-Reference':
+                parameters = node.find("parameters")
+                filename = parameters.find("file")
+                filename.text = self.output_path + "\\Reference.tif"
+                print "#### Co-registered Reference image path " + filename.text
+            elif node.attrib.get('id') == 'Read-Flood':
+                parameters = node.find("parameters")
+                filename = parameters.find("file")
+                filename.text = self.output_path + "\\Flood.tif"
+                print "#### Co-registered Flood image path " + filename.text
+            elif node.attrib.get('id') == 'Subset-Reference':
+                parameters = node.find("parameters")
+                geo_region = parameters.find("geoRegion")
+                geo_region.text = self.subset
+                print "#### Subset Reference changed"
+            elif node.attrib.get('id') == 'Subset-Flood':
+                parameters = node.find("parameters")
+                geo_region = parameters.find("geoRegion")
+                geo_region.text = self.subset
+                print "#### Subset Flood changed"
+            elif node.attrib.get('id') == 'Write-Reference':
+                parameters = node.find("parameters")
+                filename = parameters.find("file")
+                filename.text = self.output_path + "\\Reference-Subset.tif"
+                print "#### Reference Image output file " + filename.text
+            elif node.attrib.get('id') == 'Write-Flood':
+                parameters = node.find("parameters")
+                filename = parameters.find("file")
+                filename.text = self.output_path + "\\Flood-Subset.tif"
+                print "#### Flood Image output file" + filename.text
+            elif node.attrib.get('id') == 'Terrain-Correction-Reference':
+                print "#### CreateStack does not require parameters"
+            elif node.attrib.get('id') == 'Terrain-Correction-Flood':
+                print "#### CreateStack does not require parameters"
+            elif node.attrib.get('id') == 'Write-Reference-TC':
+                parameters = node.find("parameters")
+                filename = parameters.find("file")
+                filename.text = self.output_path + "\\Reference-Subset-TC.tif"
+                print "#### Reference Image output file " + filename.text
+            elif node.attrib.get('id') == 'Write-Flood-TC':
+                parameters = node.find("parameters")
+                filename = parameters.find("file")
+                filename.text = self.output_path + "\\Flood-Subset-TC.tif"
+                print "#### Flood Image output file" + filename.text
+
+        tree.write(self.output_path+'/Step1b.xml')
 
 class StepTwo:
     """
@@ -163,6 +209,7 @@ class StepTwo:
                 filename.text = self.output_path + "\\RGB.tif"
                 print "#### Output image path " + filename.text
         tree.write(self.output_path + '/Step2-RGB.xml')
+
 
 class StepThree:
     """

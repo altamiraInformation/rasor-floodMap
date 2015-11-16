@@ -1,0 +1,185 @@
+<graph id="Graph">
+    <version>1.0</version>
+    <node id="Read-Reference">
+        <operator>Read</operator>
+        <sources/>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <file></file>
+        </parameters>
+    </node>
+    <node id="Read-Flood">
+        <operator>Read</operator>
+        <sources/>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <file></file>
+        </parameters>
+    </node>
+    <node id="Subset-Reference">
+        <operator>Subset</operator>
+        <sources>
+            <sourceProduct refid="Read-Reference" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <sourceBands></sourceBands>
+            <geoRegion></geoRegion>
+            <subSamplingX>1</subSamplingX>
+            <subSamplingY>1</subSamplingY>
+            <fullSwath>false</fullSwath>
+            <tiePointGridNames/>
+            <copyMetadata>true</copyMetadata>
+        </parameters>
+    </node>
+    <node id="Subset-Flood">
+        <operator>Subset</operator>
+        <sources>
+            <sourceProduct refid="Read-Flood" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <sourceBands></sourceBands>
+            <geoRegion></geoRegion>
+            <subSamplingX>1</subSamplingX>
+            <subSamplingY>1</subSamplingY>
+            <fullSwath>false</fullSwath>
+            <tiePointGridNames/>
+            <copyMetadata>true</copyMetadata>
+        </parameters>
+    </node>
+    <node id="Write-Reference">
+        <operator>Write</operator>
+        <sources>
+            <sourceProduct refid="Subset-Reference" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <file></file>
+            <formatName>GeoTIFF</formatName>
+        </parameters>
+    </node>
+    <node id="Write-Flood">
+        <operator>Write</operator>
+        <sources>
+            <sourceProduct refid="Subset-Flood" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <file></file>
+            <formatName>GeoTIFF</formatName>
+        </parameters>
+    </node>
+    <node id="Terrain-Correction-Reference">
+        <operator>Terrain-Correction</operator>
+        <sources>
+            <sourceProduct refid="Subset-Reference" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <sourceBands></sourceBands>
+            <demName>SRTM 3Sec</demName>
+            <externalDEMFile/>
+            <externalDEMNoDataValue>0.0</externalDEMNoDataValue>
+            <demResamplingMethod>BILINEAR_INTERPOLATION</demResamplingMethod>
+            <imgResamplingMethod>BILINEAR_INTERPOLATION</imgResamplingMethod>
+            <pixelSpacingInMeter>10.01</pixelSpacingInMeter>
+            <pixelSpacingInDegree>8.992135994036409E-5</pixelSpacingInDegree>
+            <mapProjection>GEOGCS[&quot;WGS84(DD)&quot;, &#xd; DATUM[&quot;WGS84&quot;, &#xd; SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd; PRIMEM[&quot;Greenwich&quot;, 0.0], &#xd; UNIT[&quot;degree&quot;, 0.017453292519943295], &#xd; AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd; AXIS[&quot;Geodetic latitude&quot;, NORTH]]</mapProjection>
+            <nodataValueAtSea>true</nodataValueAtSea>
+            <saveDEM>false</saveDEM>
+            <saveLatLon>false</saveLatLon>
+            <saveIncidenceAngleFromEllipsoid>false</saveIncidenceAngleFromEllipsoid>
+            <saveLocalIncidenceAngle>false</saveLocalIncidenceAngle>
+            <saveProjectedLocalIncidenceAngle>false</saveProjectedLocalIncidenceAngle>
+            <saveSelectedSourceBand>true</saveSelectedSourceBand>
+            <applyRadiometricNormalization>false</applyRadiometricNormalization>
+            <saveSigmaNought>false</saveSigmaNought>
+            <saveGammaNought>false</saveGammaNought>
+            <saveBetaNought>false</saveBetaNought>
+            <incidenceAngleForSigma0>Use projected local incidence angle from DEM</incidenceAngleForSigma0>
+            <incidenceAngleForGamma0>Use projected local incidence angle from DEM</incidenceAngleForGamma0>
+            <auxFile>Latest Auxiliary File</auxFile>
+            <externalAuxFile/>
+        </parameters>
+    </node>
+    <node id="Terrain-Correction-Flood">
+        <operator>Terrain-Correction</operator>
+        <sources>
+            <sourceProduct refid="Subset-Flood" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <sourceBands></sourceBands>
+            <demName>SRTM 3Sec</demName>
+            <externalDEMFile/>
+            <externalDEMNoDataValue>0.0</externalDEMNoDataValue>
+            <demResamplingMethod>BILINEAR_INTERPOLATION</demResamplingMethod>
+            <imgResamplingMethod>BILINEAR_INTERPOLATION</imgResamplingMethod>
+            <pixelSpacingInMeter>10.01</pixelSpacingInMeter>
+            <pixelSpacingInDegree>8.992135994036409E-5</pixelSpacingInDegree>
+            <mapProjection>GEOGCS[&quot;WGS84(DD)&quot;, &#xd; DATUM[&quot;WGS84&quot;, &#xd; SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd; PRIMEM[&quot;Greenwich&quot;, 0.0], &#xd; UNIT[&quot;degree&quot;, 0.017453292519943295], &#xd; AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd; AXIS[&quot;Geodetic latitude&quot;, NORTH]]</mapProjection>
+            <nodataValueAtSea>true</nodataValueAtSea>
+            <saveDEM>false</saveDEM>
+            <saveLatLon>false</saveLatLon>
+            <saveIncidenceAngleFromEllipsoid>false</saveIncidenceAngleFromEllipsoid>
+            <saveLocalIncidenceAngle>false</saveLocalIncidenceAngle>
+            <saveProjectedLocalIncidenceAngle>false</saveProjectedLocalIncidenceAngle>
+            <saveSelectedSourceBand>true</saveSelectedSourceBand>
+            <applyRadiometricNormalization>false</applyRadiometricNormalization>
+            <saveSigmaNought>false</saveSigmaNought>
+            <saveGammaNought>false</saveGammaNought>
+            <saveBetaNought>false</saveBetaNought>
+            <incidenceAngleForSigma0>Use projected local incidence angle from DEM</incidenceAngleForSigma0>
+            <incidenceAngleForGamma0>Use projected local incidence angle from DEM</incidenceAngleForGamma0>
+            <auxFile>Latest Auxiliary File</auxFile>
+            <externalAuxFile/>
+        </parameters>
+    </node>
+    <node id="Write-Reference-TC">
+        <operator>Write</operator>
+        <sources>
+            <sourceProduct refid="Terrain-Correction-Reference" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <file></file>
+            <formatName>GeoTIFF</formatName>
+        </parameters>
+    </node>
+    <node id="Write-Flood-TC">
+        <operator>Write</operator>
+        <sources>
+            <sourceProduct refid="Terrain-Correction-Flood" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <file></file>
+            <formatName>GeoTIFF</formatName>
+        </parameters>
+    </node>
+    <applicationData id="Presentation">
+        <Description/>
+        <node id="Read-Reference">
+            <displayPosition x="110.0" y="89.0" />
+        </node>
+        <node id="Read-Flood">
+            <displayPosition x="109.0" y="155.0" />
+        </node>
+        <node id="Subset-Reference">
+            <displayPosition x="234.0" y="89.0" />
+        </node>
+        <node id="Subset-Flood">
+            <displayPosition x="232.0" y="154.0" />
+        </node>
+        <node id="Write-Reference">
+            <displayPosition x="235.0" y="26.0" />
+        </node>
+        <node id="Write-Flood">
+            <displayPosition x="233.0" y="230.0" />
+        </node>
+        <node id="Terrain-Correction-Reference">
+            <displayPosition x="479.0" y="88.0" />
+        </node>
+        <node id="Write-Reference-TC">
+            <displayPosition x="625.0" y="88.0" />
+        </node>
+        <node id="Terrain-Correction-Flood">
+            <displayPosition x="481.0" y="153.0" />
+        </node>
+        <node id="Write-Flood-TC">
+            <displayPosition x="626.0" y="152.0" />
+        </node>
+
+    </applicationData>
+</graph>

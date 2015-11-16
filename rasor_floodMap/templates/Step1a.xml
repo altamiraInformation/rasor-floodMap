@@ -1,23 +1,23 @@
 <graph id="Graph">
     <version>1.0</version>
-    <node id="Read">
+    <node id="Read-Reference">
         <operator>Read</operator>
         <sources/>
         <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-            <file>/mnt/DATA8/PRODUCTION/ACTIVE/TESTS_FLOOD_DAX/Input/S1A_IW_GRDH_1SDV_20141112T175507_20141112T175532_003252_003C20_95D2.SAFE/manifest.safe</file>
+            <file></file>
         </parameters>
     </node>
-    <node id="Read2">
+    <node id="Read-Flood">
         <operator>Read</operator>
         <sources/>
         <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-            <file>/mnt/DATA8/PRODUCTION/ACTIVE/TESTS_FLOOD_DAX/Input/S1A_IW_GRDH_1SDV_20150228T175505_20150228T175530_004827_006011_433B.SAFE/manifest.safe</file>
+            <file></file>
         </parameters>
     </node>
-    <node id="Calibration">
+    <node id="Calibration-Reference">
         <operator>Calibration</operator>
         <sources>
-            <sourceProduct refid="Read" />
+            <sourceProduct refid="Read-Reference" />
         </sources>
         <parameters class="com.bc.ceres.binding.dom.XppDomElement">
             <sourceBands/>
@@ -34,10 +34,10 @@
             <outputDNBand>false</outputDNBand>
         </parameters>
     </node>
-    <node id="Calibration2">
+    <node id="Calibration-Flood">
         <operator>Calibration</operator>
         <sources>
-            <sourceProduct refid="Read2" />
+            <sourceProduct refid="Read-Flood" />
         </sources>
         <parameters class="com.bc.ceres.binding.dom.XppDomElement">
             <sourceBands/>
@@ -54,14 +54,14 @@
             <outputDNBand>false</outputDNBand>
         </parameters>
     </node>
-    <node id="Subset">
+    <node id="Subset-Reference">
         <operator>Subset</operator>
         <sources>
-            <sourceProduct refid="Calibration" />
+            <sourceProduct refid="Calibration-Reference" />
         </sources>
         <parameters class="com.bc.ceres.binding.dom.XppDomElement">
             <sourceBands>Sigma0_VV</sourceBands>
-            <geoRegion>POLYGON ((-1.390540361404419 43.90915298461914, 0.1696255803108215 43.90915298461914, 0.1696255803108215 43.23019027709961, -1.390540361404419 43.23019027709961, -1.390540361404419 43.90915298461914))</geoRegion>
+            <geoRegion></geoRegion>
             <subSamplingX>1</subSamplingX>
             <subSamplingY>1</subSamplingY>
             <fullSwath>false</fullSwath>
@@ -69,19 +69,33 @@
             <copyMetadata>true</copyMetadata>
         </parameters>
     </node>
-    <node id="Subset2">
+    <node id="Subset-Flood">
         <operator>Subset</operator>
         <sources>
-            <sourceProduct refid="Calibration2" />
+            <sourceProduct refid="Calibration-Flood" />
         </sources>
         <parameters class="com.bc.ceres.binding.dom.XppDomElement">
             <sourceBands>Sigma0_VV</sourceBands>
-            <geoRegion>POLYGON ((-1.390540361404419 43.90915298461914, 0.1696255803108215 43.90915298461914, 0.1696255803108215 43.23019027709961, -1.390540361404419 43.23019027709961, -1.390540361404419 43.90915298461914))</geoRegion>
+            <geoRegion></geoRegion>
             <subSamplingX>1</subSamplingX>
             <subSamplingY>1</subSamplingY>
             <fullSwath>false</fullSwath>
             <tiePointGridNames/>
             <copyMetadata>true</copyMetadata>
+        </parameters>
+    </node>
+    <node id="CreateStack">
+        <operator>CreateStack</operator>
+        <sources>
+            <sourceProduct refid="Subset-Flood" />
+            <sourceProduct.1 refid="Subset-Reference" />
+        </sources>
+        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+            <masterBands/>
+            <sourceBands/>
+            <resamplingType>NONE</resamplingType>
+            <extent>Master</extent>
+            <initialOffsetMethod>ORBIT</initialOffsetMethod>
         </parameters>
     </node>
     <node id="GCP-Selection">
@@ -120,79 +134,68 @@
             <openResidualsFile>false</openResidualsFile>
         </parameters>
     </node>
-    <node id="BandSelect">
+    <node id="BandSelect-Reference">
         <operator>BandSelect</operator>
         <sources>
             <sourceProduct refid="Warp" />
         </sources>
         <parameters class="com.bc.ceres.binding.dom.XppDomElement">
             <selectedPolarisations/>
-            <sourceBands>Sigma0_VV_slv1_12Nov2014</sourceBands>
+            <sourceBands></sourceBands>
         </parameters>
     </node>
-    <node id="BandSelect2">
+    <node id="BandSelect-Flood">
         <operator>BandSelect</operator>
         <sources>
             <sourceProduct refid="Warp" />
         </sources>
         <parameters class="com.bc.ceres.binding.dom.XppDomElement">
             <selectedPolarisations/>
-            <sourceBands>Sigma0_VV_mst_28Feb2015</sourceBands>
+            <sourceBands></sourceBands>
         </parameters>
     </node>
-    <node id="CreateStack">
-        <operator>CreateStack</operator>
-        <sources>
-            <sourceProduct refid="Subset2" />
-            <sourceProduct.1 refid="Subset" />
-        </sources>
-        <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-            <masterBands/>
-            <sourceBands/>
-            <resamplingType>NONE</resamplingType>
-            <extent>Master</extent>
-            <initialOffsetMethod>ORBIT</initialOffsetMethod>
-        </parameters>
-    </node>
-    <node id="Write2">
+    <node id="Write-Reference">
         <operator>Write</operator>
         <sources>
-            <sourceProduct refid="BandSelect2" />
+            <sourceProduct refid="BandSelect-Reference" />
         </sources>
         <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-            <file>/mnt/DATA8/PRODUCTION/ACTIVE/TESTS_FLOOD_DAX/Output/Flood.tif</file>
+            <file></file>
             <formatName>GeoTIFF</formatName>
         </parameters>
     </node>
-    <node id="Write">
+    <node id="Write-Flood">
         <operator>Write</operator>
         <sources>
-            <sourceProduct refid="BandSelect" />
+            <sourceProduct refid="BandSelect-Flood" />
         </sources>
         <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-            <file>/mnt/DATA8/PRODUCTION/ACTIVE/TESTS_FLOOD_DAX/Output/Reference.tif</file>
+            <file></file>
             <formatName>GeoTIFF</formatName>
         </parameters>
     </node>
     <applicationData id="Presentation">
         <Description/>
-        <node id="Read">
+        <node id="Read-Reference">
             <displayPosition x="48.0" y="99.0" />
         </node>
-        <node id="Read2">
+        <node id="Read-Flood">
             <displayPosition x="49.0" y="151.0" />
         </node>
-        <node id="Calibration">
+        <node id="Calibration-Reference">
             <displayPosition x="154.0" y="99.0" />
         </node>
-        <node id="Calibration2">
+        <node id="Calibration-Flood">
             <displayPosition x="146.0" y="151.0" />
         </node>
-        <node id="Subset">
+        <node id="Subset-Reference">
             <displayPosition x="272.0" y="99.0" />
         </node>
-        <node id="Subset2">
+        <node id="Subset-Flood">
             <displayPosition x="277.0" y="151.0" />
+        </node>
+        <node id="CreateStack">
+            <displayPosition x="422.0" y="126.0" />
         </node>
         <node id="GCP-Selection">
             <displayPosition x="565.0" y="124.0" />
@@ -200,20 +203,17 @@
         <node id="Warp">
             <displayPosition x="755.0" y="127.0" />
         </node>
-        <node id="BandSelect">
+        <node id="BandSelect-Reference">
             <displayPosition x="868.0" y="96.0" />
         </node>
-        <node id="BandSelect2">
+        <node id="BandSelect-Flood">
             <displayPosition x="866.0" y="171.0" />
         </node>
-        <node id="CreateStack">
-            <displayPosition x="422.0" y="126.0" />
-        </node>
-        <node id="Write2">
-            <displayPosition x="1030.0" y="169.0" />
-        </node>
-        <node id="Write">
+        <node id="Write-Reference">
             <displayPosition x="1029.0" y="99.0" />
+        </node>
+        <node id="Write-Flood">
+            <displayPosition x="1030.0" y="169.0" />
         </node>
     </applicationData>
 </graph>
