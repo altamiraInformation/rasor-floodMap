@@ -20,7 +20,6 @@
 """
 
 import xml.etree.ElementTree as ET
-import os
 
 
 class StepOne:
@@ -191,69 +190,39 @@ class StepTwo:
 
 class StepThree:
     """
-    Step Three of the processing Chain (RGB Segmentation)
+    Step Three of the processing Chain (Mean filtering based on OTB)
     """
 
-    def __init__(self, xml_file_path, image_rgb_path, output_path, cluster_count=14, iteration_count=30):
-        self.xml_file_path = xml_file_path
-        self.image_rgb_path = image_rgb_path
+    def __init__(self, xml_step3_file, image_rgb_file, output_path, radius=5, range=15):
+        self.xml_step3_file = xml_step3_file
+        self.image_rgb_file = image_rgb_file
         self.output_path = output_path
-        self.cluster_count = cluster_count
-        self.iteration_count = iteration_count
+        self.radius = radius
+        self.range = range
 
     def write_xml(self):
-        print "## Step 3: Create xml for Segmentation"
-        print "#### Using " + self.xml_file_path
+        print "## Step 3: Create xml for Mean filtering"
+        print "#### Using " + self.xml_step3_file
 
-        tree = ET.parse(self.xml_file_path)
+        tree = ET.parse(self.xml_step3_file)
         root = tree.getroot()
 
-        for node in root.findall('node'):
-            # For each node set the parameters based on the python plugin input
-            if node.attrib.get('id') == 'Read':
-                parameters = node.find("parameters")
-                # set input file name
-                filename = parameters.find("file")
-                filename.text = self.image_rgb_path
-                print "#### RGB Image from Step 2" + filename.text
-            elif node.attrib.get('id') == 'Write':
-                parameters = node.find("parameters")
-                # set input file name
-                filename = parameters.find("file")
-                filename.text = self.output_path + "\\RGB_Segmentation.tif"
-                print "#### Output RGB Segmtantion image path " + filename.text
-            elif node.attrib.get('id') == 'Segmentation':
-                parameters = node.find("parameters")
-                cluster_count = parameters.find("clusterCount")
-                cluster_count.text = str(self.cluster_count)
-                iteration_count = parameters.find("iterationCount")
-                iteration_count.text = str(self.iteration_count)
-                print "#### KMeans Cluster Analysis with default parameters"
+        for parameter in root.findall('application/parameter'):
+            if parameter.find('name') == 'Input Image':
+                value = parameter.find("value")
+                value.text = self.image_rgb_file
+                print "#### RGB Image from Step 2" + value.text
+            elif parameter.find('name') == 'Output Image':
+                value = parameter.find("value")
+                value.text = self.output_path + '/RGB-Mean.tif'
+                print "#### Mean filter image " + value.text
+            elif parameter.find('name') == 'Spatial Image':
+                value = parameter.find("value")
+                value.text = self.output_path + '/RGB-Mean_spatial.tif'
+                print "#### Output RGB mean spatial image path " + value.text
+            elif parameter.find('name') == 'Spatial radius':
+                value = parameter.find("value")
+                value.text = self.radius
+                print "#### Mean filter with radius " + self.radius
 
-        tree.write(self.output_path + '/Step3-Segmentation.xml')
-
-
-# python main.py /path/to/image/before /path/to/image/after region geoRegion
-if __name__ == '__main__':
-    print "# Generating xml for Vietnam Zone 1"
-
-    xml_step1a_file = 'C:/Users/alex.ALTAMIRA-INFORM/Projects/08.RASOR/01.Sofware/github/rasor-floodMap/rasor_floodMap/templates/Step1a.xml'
-    xml_step1b_file = 'C:/Users/alex.ALTAMIRA-INFORM/Projects/08.RASOR/01.Sofware/github/rasor-floodMap/rasor_floodMap/templates/Step1b.xml'
-    image_reference_path = 'C:\\Users\\alex.ALTAMIRA-INFORM\\Projects\\08.RASOR\\01.Sofware\\Flood Mapping tool\\Input\\Zone 1\S1A_IW_GRDH_1SDV_20150724T105730_20150724T105759_006952_00969F_AFC6.SAFE\\manifest.safe'
-    image_flood_path = 'C:\\Users\\alex.ALTAMIRA-INFORM\\Projects\\08.RASOR\\01.Sofware\\Flood Mapping tool\\Input\\Zone 1\\S1A_IW_GRDH_1SDV_20150817T105732_20150817T105756_007302_00A042_05C4.SAFE\\manifest.safe'
-    subset = "POLYGON ((106.49468118665962 20.531887746800493, 106.34572730547497 21.258832517147873, 107.14589170596244 21.40277153419721, 107.29092536531218 20.676267553038453, 106.49468118665962 20.531887746800493))"
-    output_path = "C:\\Users\\alex.ALTAMIRA-INFORM\\Projects\\08.RASOR\\01.Sofware\\Flood Mapping tool\\Output\\Zone 1 New"
-    date_reference = "24Jul2015"
-    date_flood = "17Aug2015"
-
-    step_one = StepOne(xml_step1a_file, xml_step1b_file, image_reference_path, image_flood_path, subset, output_path, date_reference, date_flood)
-    step_one.write_xml()
-
-    xml_step2_file = 'C:/Users/alex.ALTAMIRA-INFORM/Projects/08.RASOR/01.Sofware/github/rasor-floodMap/rasor_floodMap/templates/Step2.xml'
-    image_reference_path = output_path + '/Reference-Subset.tif'
-    image_flood_path = output_path + '/Flood-Subset.tif'
-    date_reference = "24Jul2015"
-    date_flood = "17Aug2015"
-
-    step_two = StepTwo(xml_step2_file, image_reference_path, date_reference, image_flood_path, date_flood,  output_path)
-    step_two.write_xml()
+        tree.write(self.output_path + '/Step3.xml')

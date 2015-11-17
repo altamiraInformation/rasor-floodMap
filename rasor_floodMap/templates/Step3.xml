@@ -1,45 +1,45 @@
-<graph id="Graph">
-  <version>1.0</version>
-  <node id="Read">
-    <operator>Read</operator>
-    <sources/>
-    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <file></file>
-    </parameters>
-  </node>
-  <node id="Write">
-    <operator>Write</operator>
-    <sources>
-      <sourceProduct refid="Segmentation"/>
-    </sources>
-    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <file></file>
-      <formatName>GeoTIFF</formatName>
-    </parameters>
-  </node>
-  <node id="Segmentation">
-    <operator>KMeansClusterAnalysis</operator>
-    <sources>
-      <sourceProduct refid="Read"/>
-    </sources>
-    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
-      <clusterCount>14</clusterCount>
-      <iterationCount>30</iterationCount>
-      <randomSeed>31415</randomSeed>
-      <sourceBandNames/>
-      <roiMaskName/>
-    </parameters>
-  </node>
-  <applicationData id="Presentation">
-    <Description/>
-    <node id="Read">
-      <displayPosition x="37.0" y="134.0"/>
-    </node>
-    <node id="Write">
-      <displayPosition x="455.0" y="135.0"/>
-    </node>
-    <node id="Segmentation">
-      <displayPosition x="180.0" y="132.0"/>
-    </node>
-  </applicationData>
-</graph>
+<?xml version="1.0" ?>
+<OTB>
+    <version>4.3.0</version>
+    <application>
+        <name>MeanShiftSmoothing</name>
+        <descr>Perform mean shift filtering</descr>
+        <doc>
+            <name>Exact Large-Scale Mean-Shift segmentation, step 1 (smoothing)</name>
+            <longdescr>This application performs mean shift fitlering (multi-threaded).</longdescr>
+            <authors>OTB-Team</authors>
+            <limitations>With mode search option, the result will slightly depend on thread number.</limitations>
+            <seealso> </seealso>
+            <tags>
+                <tag>Image Filtering</tag>
+                <tag>LSMS</tag>
+            </tags>
+        </doc>
+        <parameter mandatory="true">
+            <key>in</key>
+            <type>InputImage</type>
+            <name>Input Image</name>
+            <value>C:/Users/alex.ALTAMIRA-INFORM/Projects/08.RASOR/01.Sofware/Flood Mapping tool/Output/Zone 1 New/RGB.tif</value>
+        </parameter>
+        <parameter mandatory="true">
+            <key>fout</key>
+            <type>OutputImage</type>
+            <name>Filtered output</name>
+            <pixtype>float</pixtype>
+            <value>C:/Users/alex.ALTAMIRA-INFORM/Projects/08.RASOR/01.Sofware/Flood Mapping tool/Output/Zone 1 New/RGB_Mean15.tif</value>
+        </parameter>
+        <parameter mandatory="true">
+            <key>foutpos</key>
+            <type>OutputImage</type>
+            <name>Spatial image</name>
+            <pixtype>float</pixtype>
+            <value>C:/Users/alex.ALTAMIRA-INFORM/Projects/08.RASOR/01.Sofware/Flood Mapping tool/Output/Zone 1 New/RGB_Mean15_spatial.tif</value>
+        </parameter>
+        <parameter mandatory="false">
+            <key>spatialr</key>
+            <type>Int</type>
+            <name>Spatial radius</name>
+            <value>5</value>
+        </parameter>
+    </application>
+</OTB>
