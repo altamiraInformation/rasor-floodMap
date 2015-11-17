@@ -24,16 +24,17 @@ import xml.etree.ElementTree as ET
 
 class StepOne:
     """
-    Step One of the processing Chain (Calibration + Subset + Co-Registration)
+    Step One of the processing Chain (Calibration + Subset + Co-Registration using SNAP)
     """
 
-    def __init__(self, xml_step1a_file, xml_step1b_file, image_reference_path, image_flood_path, subset, output_path, date_reference, date_flood):
+    def __init__(self, xml_step1a_file, xml_step1b_file, image_reference_path, image_flood_path, subset1, subset2, output_path, date_reference, date_flood):
         self.xml_step1a_file = xml_step1a_file
         self.xml_step1b_file = xml_step1b_file
         self.image_reference_path = image_reference_path
         self.image_flood_path = image_flood_path
         self.output_path = output_path
-        self.subset = subset
+        self.subset1 = subset1
+        self.subset2= subset2
         self.date_flood = date_flood
         self.date_reference = date_reference
 
@@ -59,11 +60,11 @@ class StepOne:
                 print "#### Calibration-Flood does not require parameters"
             elif node.attrib.get('id') == 'Subset-Reference':
                 parameter = node.find("parameters/geoRegion")
-                parameter.text = self.subset
+                parameter.text = self.subset1
                 print "#### Subset Reference changed"
             elif node.attrib.get('id') == 'Subset-Flood':
                 parameter = node.find("parameters/geoRegion")
-                parameter.text = self.subset
+                parameter.text = self.subset1
                 print "#### Subset Flood changed"
             elif node.attrib.get('id') == 'CreateStack':
                 print "#### CreateStack does not require parameters"
@@ -107,11 +108,11 @@ class StepOne:
                 print "#### Co-registered Flood image path " + parameter.text
             elif node.attrib.get('id') == 'Subset-Reference':
                 parameter = node.find("parameters/geoRegion")
-                parameter.text = self.subset
+                parameter.text = self.subset2
                 print "#### Subset Reference changed"
             elif node.attrib.get('id') == 'Subset-Flood':
                 parameter = node.find("parameters/geoRegion")
-                parameter.text = self.subset
+                parameter.text = self.subset2
                 print "#### Subset Flood changed"
             elif node.attrib.get('id') == 'Write-Reference':
                 parameter = node.find("parameters/file")
@@ -139,7 +140,7 @@ class StepOne:
 
 class StepTwo:
     """
-    Step Two of the processing Chain (RGB Composition)
+    Step Two of the processing Chain (RGB Composition using SNAP)
     """
 
     def __init__(self, xml_step2_file, image_reference_path, date_reference, image_flood_path, date_flood,  output_path):
@@ -190,7 +191,7 @@ class StepTwo:
 
 class StepThree:
     """
-    Step Three of the processing Chain (Mean filtering based on OTB)
+    Step Three of the processing Chain (Mean filtering using OTB)
     """
 
     def __init__(self, xml_step3_file, image_rgb_file, output_path, radius=5, range=15):
@@ -208,21 +209,56 @@ class StepThree:
         root = tree.getroot()
 
         for parameter in root.findall('application/parameter'):
-            if parameter.find('name') == 'Input Image':
+            if parameter.find('key').text == 'in':
                 value = parameter.find("value")
                 value.text = self.image_rgb_file
-                print "#### RGB Image from Step 2" + value.text
-            elif parameter.find('name') == 'Output Image':
+                print "#### RGB Image from Step 2: " + value.text
+            elif parameter.find('key').text == 'fout':
                 value = parameter.find("value")
                 value.text = self.output_path + '/RGB-Mean.tif'
-                print "#### Mean filter image " + value.text
-            elif parameter.find('name') == 'Spatial Image':
+                print "#### Mean filter image: " + value.text
+            elif parameter.find('key').text == 'foutpos':
                 value = parameter.find("value")
                 value.text = self.output_path + '/RGB-Mean_spatial.tif'
-                print "#### Output RGB mean spatial image path " + value.text
-            elif parameter.find('name') == 'Spatial radius':
+                print "#### Output RGB mean spatial image path: " + value.text
+            elif parameter.find('key').text == 'spatialr':
                 value = parameter.find("value")
-                value.text = self.radius
-                print "#### Mean filter with radius " + self.radius
+                value.text = str(self.radius)
+                print "#### Mean filter with radius: " + str(self.radius)
 
         tree.write(self.output_path + '/Step3.xml')
+
+
+class StepFour:
+    """
+    Step Four of the processing Chain (Classification using OTB)
+    """
+
+    def __init__(self, xml_step4_file, image_mean_file, output_path, num_classes=3):
+        self.xml_step4_file = xml_step4_file
+        self.image_mean_file = image_mean_file
+        self.output_path = output_path
+        self.num_classes = num_classes
+
+    def write_xml(self):
+        print "## Step 4: Create xml for Classification"
+        print "#### Using " + self.xml_step4_file
+
+        tree = ET.parse(self.xml_step4_file)
+        root = tree.getroot()
+
+        for parameter in root.findall('application/parameter'):
+            if parameter.find('key').text == 'in':
+                value = parameter.find("value")
+                value.text = self.image_mean_file
+                print "#### RGB-Mean Image from Step 3: " + value.text
+            elif parameter.find('key').text == 'out':
+                value = parameter.find("value")
+                value.text = self.output_path + '/RGB-Mean-Kmeans.tif'
+                print "#### Mean filter image: " + value.text
+            elif parameter.find('key').text == 'nc':
+                value = parameter.find("value")
+                value.text = str(self.num_classes)
+                print "#### Num classes Kmeans: " + str(self.num_classes)
+
+        tree.write(self.output_path + '/Step4.xml')
