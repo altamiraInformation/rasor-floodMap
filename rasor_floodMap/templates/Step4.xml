@@ -1,0 +1,44 @@
+<?xml version="1.0" ?>
+<OTB>
+    <version>4.3.0</version>
+    <application>
+        <name>KMeansClassification</name>
+        <descr>Unsupervised KMeans image classification</descr>
+        <doc>
+            <name>Unsupervised KMeans image classification</name>
+            <longdescr>Performs unsupervised KMeans image classification.</longdescr>
+            <authors>OTB-Team</authors>
+            <limitations>None</limitations>
+            <seealso> </seealso>
+            <tags>
+                <tag>Segmentation</tag>
+                <tag>Learning</tag>
+            </tags>
+        </doc>
+        <parameter mandatory="true">
+            <key>in</key>
+            <type>InputImage</type>
+            <name>Input Image</name>
+            <value></value>
+        </parameter>
+        <parameter mandatory="true">
+            <key>out</key>
+            <type>OutputImage</type>
+            <name>Output Image</name>
+            <pixtype>float</pixtype>
+            <value></value>
+        </parameter>
+        <parameter mandatory="false">
+            <key>ram</key>
+            <type>RAM</type>
+            <name>Available RAM (Mb)</name>
+            <value>128</value>
+        </parameter>
+        <parameter mandatory="true">
+            <key>nc</key>
+            <type>Int</type>
+            <name>Number of classes</name>
+            <value></value>
+        </parameter>
+    </application>
+</OTB>
