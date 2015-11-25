@@ -100,10 +100,42 @@
       <initialOffsetMethod>ORBIT</initialOffsetMethod>
     </parameters>
   </node>
+  <node id="Terrain-Correction-RGB">
+    <operator>Terrain-Correction</operator>
+    <sources>
+        <sourceProduct refid="CreateStack-RGB" />
+    </sources>
+    <parameters class="com.bc.ceres.binding.dom.XppDomElement">
+        <sourceBands></sourceBands>
+        <demName>SRTM 3Sec</demName>
+        <externalDEMFile/>
+        <externalDEMNoDataValue>0.0</externalDEMNoDataValue>
+        <demResamplingMethod>BILINEAR_INTERPOLATION</demResamplingMethod>
+        <imgResamplingMethod>BILINEAR_INTERPOLATION</imgResamplingMethod>
+        <pixelSpacingInMeter>10.01</pixelSpacingInMeter>
+        <pixelSpacingInDegree>8.992135994036409E-5</pixelSpacingInDegree>
+        <mapProjection>GEOGCS[&quot;WGS84(DD)&quot;, &#xd; DATUM[&quot;WGS84&quot;, &#xd; SPHEROID[&quot;WGS84&quot;, 6378137.0, 298.257223563]], &#xd; PRIMEM[&quot;Greenwich&quot;, 0.0], &#xd; UNIT[&quot;degree&quot;, 0.017453292519943295], &#xd; AXIS[&quot;Geodetic longitude&quot;, EAST], &#xd; AXIS[&quot;Geodetic latitude&quot;, NORTH]]</mapProjection>
+        <nodataValueAtSea>true</nodataValueAtSea>
+        <saveDEM>false</saveDEM>
+        <saveLatLon>false</saveLatLon>
+        <saveIncidenceAngleFromEllipsoid>false</saveIncidenceAngleFromEllipsoid>
+        <saveLocalIncidenceAngle>false</saveLocalIncidenceAngle>
+        <saveProjectedLocalIncidenceAngle>false</saveProjectedLocalIncidenceAngle>
+        <saveSelectedSourceBand>true</saveSelectedSourceBand>
+        <applyRadiometricNormalization>false</applyRadiometricNormalization>
+        <saveSigmaNought>false</saveSigmaNought>
+        <saveGammaNought>false</saveGammaNought>
+        <saveBetaNought>false</saveBetaNought>
+        <incidenceAngleForSigma0>Use projected local incidence angle from DEM</incidenceAngleForSigma0>
+        <incidenceAngleForGamma0>Use projected local incidence angle from DEM</incidenceAngleForGamma0>
+        <auxFile>Latest Auxiliary File</auxFile>
+        <externalAuxFile/>
+    </parameters>
+  </node>
   <node id="Write-RGB">
     <operator>Write</operator>
     <sources>
-      <sourceProduct refid="CreateStack-RGB"/>
+      <sourceProduct refid="Terrain-Correction-RGB"/>
     </sources>
     <parameters class="com.bc.ceres.binding.dom.XppDomElement">
       <file></file>
