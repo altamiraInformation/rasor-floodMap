@@ -32,7 +32,7 @@
             <key>ram</key>
             <type>RAM</type>
             <name>Available RAM (Mb)</name>
-            <value>128</value>
+            <value>512</value>
         </parameter>
         <parameter mandatory="true">
             <key>nc</key>

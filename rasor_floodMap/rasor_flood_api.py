@@ -26,47 +26,43 @@ from PyQt4 import QtCore, QtGui
 from osgeo import gdal
 import os, subprocess, traceback, tempfile, contextlib, time, signal, ctypes, array
 
+# Local imports
+from rasor_gtiff_api import GeoTiff
+from rasor_poly_api import Shapefile
+
 class StepWorker(QtCore.QObject):
     '''Worker in order to run time-consuming tasks of S1-TBX'''
-    def __init__(self, s1dir, xmlFileB, xmlFileA):
+    def __init__(self, tbx, subcmd, tbx_dir, xmlFileB, xmlFileA, outdir):
 		QtCore.QObject.__init__(self)
-		self.s1dir = s1dir
+		self.tbx_dir = tbx_dir
+		self.type = tbx
 		self.xmlFileB = xmlFileB
 		self.xmlFileA = xmlFileA
 		self.killed = False
 		self.pro = None
 		self.ret = True
+		self.subcmd = subcmd
+		self.outdir = outdir
 	
-	# Build S1-CMD
-    def build_cmd_old_s1tbx(self, xmlFile):
+	# Build CMD - Step 1,2
+    def build_cmd(self, xmlFile):
+		if self.type == 's1tbx':	return self.build_cmd_s1tbx(xmlFile)
+		else:						return self.build_cmd_otbx_s3(xmlFile)
+
+	# Build S1-CMD - Step 1,2
+    def build_cmd_s1tbx(self, xmlFile):
 		args = [
-				self.s1dir.replace(r'\\', r'\\\\')+"\\jre\\bin\\java.exe",
-				"-Xms512M",
-				"-Xmx2048M",
-				"-Xverify:none",
-				"-XX:+AggressiveOpts",
-				"-XX:+UseFastAccessorMethods",
-				"-XX:+UseParallelGC",
-				"-XX:+UseNUMA",
-				"-XX:+UseLoopPredicate",
-				"-Dceres.context=s1tbx",
-				"-Ds1tbx.mainClass=org.esa.beam.framework.gpf.main.GPT",
-				"-Ds1tbx.home="+self.s1dir.replace(r'\\', r'\\\\'),
-				"-Ds1tbx.debug=false",
-				"-Ds1tbx.consoleLog=false",
-				"-Ds1tbx.logLevel=WARNING",
-				"-Dncsa.hdf.hdflib.HDFLibrary.hdflib="+self.s1dir.replace(r'\\', r'\\\\')+"\\jhdf.dll",
-				"-Dncsa.hdf.hdf5lib.H5.hdf5lib="+self.s1dir.replace(r'\\', r'\\\\')+"\\jhdf5.dll",
-				"-jar",
-				self.s1dir.replace(r'\\', r'\\\\')+"\\bin\\snap-launcher.jar",
+				self.tbx_dir.replace(r'\\', r'\\\\')+"\\gpt.exe",
 				xmlFile		
 		]
 		return args
-	
-	# Build S1-CMD
-    def build_cmd(self, xmlFile):
+
+	# Build OTB-CMD - Step 3
+    def build_cmd_otbx_s3(self, xmlFile):
 		args = [
-				self.s1dir.replace(r'\\', r'\\\\')+"\\gpt.exe",
+				self.tbx_dir.replace(r'\\', r'\\\\')+"\\otbApplicationLauncherCommandLine.exe",
+				self.subcmd,
+				"-inxml",
 				xmlFile		
 		]
 		return args
@@ -76,6 +72,7 @@ class StepWorker(QtCore.QObject):
 		## Show user start info
 		self.infoSIGNAL.emit(info)
 		## Execute command
+		print args
 		pro = subprocess.Popen(args,								 
 							 bufsize=0,
 							 universal_newlines=True,
@@ -85,20 +82,31 @@ class StepWorker(QtCore.QObject):
 							 stdout=subprocess.PIPE,
 							 stderr=subprocess.STDOUT)
 		self.pro = pro
-		## Standard Output Loop	
-		line = ""
-		#last_per = 0
-		while pro.poll() is None:
-			char = pro.stdout.read(1) 
-			line=line+char
-			#per=self.get_percent(line)
-			#if per < last_per: line = line+'<br>'
-			#last_per=per
-			# Communicate with GUI
-			self.infoSIGNAL.emit(info+'<br>'+line)			
-			#if per:	self.progressSIGNAL.emit(per)			
-			time.sleep(0.15)
-		print line
+		
+		## Standard S1TBX Output Loop	
+		if self.type == 's1tbx':
+			line = ""
+			#last_per = 0
+			while pro.poll() is None:
+				char = pro.stdout.read(1) 
+				line=line+char
+				# Communicate with GUI
+				self.infoSIGNAL.emit(info+'<br>'+line)	
+				time.sleep(0.1)
+		## Standard OTBX Output Loop	
+		else:
+			line = ""
+			while pro.poll() is None:
+				line = pro.stdout.readline()
+				# Percent
+				per=self.get_percent(line)
+				if per:	self.progressSIGNAL.emit(per)
+				# Info
+				self.infoSIGNAL.emit(info+'<br>'+line)
+    
+    # Get percent
+    def get_percent(self, msg):		
+		return None
 
 	# Run S1-CMD
     def run(self):
@@ -109,15 +117,26 @@ class StepWorker(QtCore.QObject):
 						
 			# Environement variable neeeded for S1-toolbox (clean environement)
 			mod_env=os.environ.copy()
-			mod_env["S1TBX_HOME"] = "\"" + self.s1dir.replace(r'\\', r'\\\\') + "\""
+			
+			if self.type == 's1tbx':	
+				mod_env["S1TBX_HOME"] = "\"" + self.tbx_dir.replace(r'\\', r'\\\\') + "\""
+			else:		
+				lib_dir=os.path.abspath(os.path.join(self.tbx_dir, os.pardir))+"\\lib\\otb\\applications"				
+				mod_env["ITK_AUTOLOAD_PATH"] = lib_dir.replace(r'\\', r'\\\\')
+				print "\"" + lib_dir.replace(r'\\', r'\\\\') + "\""
 
 			# Build commands (1 or 2 xml files)
 			args=self.build_cmd(self.xmlFileB)
-			self.execute(args, mod_env, tmpdir, 'Working ... ')	
-			#self.progressSIGNAL.emit(0)
+			self.execute(args, mod_env, tmpdir, 'Executing '+self.type+' ... ')	
+
 			if self.xmlFileA: 
 				args2=self.build_cmd(self.xmlFileA)
-				self.execute(args2, mod_env, tmpdir, 'Working on the second image ... ')
+				self.execute(args2, mod_env, tmpdir, 'Subsetting + Orthorectification ... ')
+
+			if self.subcmd == 'KMeansClassification':
+				geo = GeoTiff(self.outdir+'/RGB-Mean-Kmeans.tif') 
+				geo.polygonize(self.outdir+'/RGB-Class.shp')
+				shp=Shapefile(self.outdir+'/RGB-Class.shp')
 
         except Exception, e:  
 			# Inform the user in the console
@@ -128,17 +147,6 @@ class StepWorker(QtCore.QObject):
 		
 		# Finished
         self.finishSIGNAL.emit(self.ret)
-
-	# Lousy progress definition
-    def get_percent(self, msg):
-		per=["10%","20%","30%","40%","50%","60%","70%","80%","90%","100%"]
-		tot=array.array('i',(0 for i in range(0,10)))	
-		i=0
-		while i < 10:
-			tot[i]=msg.count(per[i])
-			i=i+1
-		# magic
-		return (sum(tot)*10)%100
 		
 	# Slot definition (Abort)
     def killSLOT(self):

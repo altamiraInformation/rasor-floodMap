@@ -57,7 +57,7 @@ class Shapefile():
 		
 		return area_m2
 
-    def getBBOX(self):
+    def getBBOX(self, big):
         try:
 			# Read SHP Features
 			driver = ogr.GetDriverByName('ESRI Shapefile')
@@ -72,7 +72,8 @@ class Shapefile():
 			# Calculate convex hull and BBOX
 			convexhull = geomcol.ConvexHull()
 			env = convexhull.GetEnvelope()
-			barda = 0.02 # 2.2Km margin aprox
+			if big: 	barda = 0.2  # 22Km margin aprox
+			else:		barda = 0.02 # 2.2Km margin aprox
 			area = self.getAreaBBOX(env, barda)
 			if (area > 10000): 
 				print "AREA is too big, try entering another polygon"

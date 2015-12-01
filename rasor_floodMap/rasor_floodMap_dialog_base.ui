@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>775</width>
-    <height>400</height>
+    <height>450</height>
    </rect>
   </property>
   <property name="sizePolicy">
@@ -19,13 +19,13 @@
   <property name="minimumSize">
    <size>
     <width>775</width>
-    <height>400</height>
+    <height>450</height>
    </size>
   </property>
   <property name="maximumSize">
    <size>
     <width>775</width>
-    <height>400</height>
+    <height>450</height>
    </size>
   </property>
   <property name="windowTitle">
@@ -37,7 +37,7 @@
      <x>10</x>
      <y>10</y>
      <width>751</width>
-     <height>251</height>
+     <height>291</height>
     </rect>
    </property>
    <property name="maximumSize">
@@ -57,7 +57,7 @@
     <locale language="English" country="UnitedStates"/>
    </property>
    <property name="currentIndex">
-    <number>1</number>
+    <number>3</number>
    </property>
    <widget class="QWidget" name="confTab">
     <attribute name="title">
@@ -67,7 +67,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>50</y>
+       <y>40</y>
        <width>721</width>
        <height>29</height>
       </rect>
@@ -95,20 +95,20 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>30</y>
+       <y>20</y>
        <width>231</width>
        <height>17</height>
       </rect>
      </property>
      <property name="text">
-      <string>Sentinel-1 toolbox exe directory:</string>
+      <string>Sentinel-1 toolbox bin directory:</string>
      </property>
     </widget>
     <widget class="QWidget" name="layoutWidget_4">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>110</y>
+       <y>160</y>
        <width>721</width>
        <height>29</height>
       </rect>
@@ -136,7 +136,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>90</y>
+       <y>140</y>
        <width>231</width>
        <height>17</height>
       </rect>
@@ -149,7 +149,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>170</y>
+       <y>220</y>
        <width>721</width>
        <height>29</height>
       </rect>
@@ -177,14 +177,55 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>150</y>
+       <y>200</y>
        <width>301</width>
        <height>17</height>
       </rect>
      </property>
      <property name="text">
-      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Polygon Shapefile (Subsetting BoundingBox):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+      <string>Polygon Shapefile (Subsetting Bounding Box):</string>
      </property>
+    </widget>
+    <widget class="QLabel" name="label_10">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>80</y>
+       <width>231</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Orfeo toolbox bin directory:</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="layoutWidget_8">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>100</y>
+       <width>721</width>
+       <height>29</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_11">
+      <item>
+       <widget class="QLineEdit" name="editOrfeoPath"/>
+      </item>
+      <item>
+       <widget class="QPushButton" name="buttOrfeoPath">
+        <property name="maximumSize">
+         <size>
+          <width>40</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="text">
+         <string>...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </widget>
    <widget class="QWidget" name="tab_step1">
@@ -201,7 +242,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Sentinel-1 image before the flood:</string>
+      <string>Sentinel-1 Reference image:</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_2">
@@ -214,7 +255,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Sentinel-1 image after the flood:</string>
+      <string>Sentinel-1 Flood image:</string>
      </property>
     </widget>
     <widget class="QWidget" name="layoutWidget">
@@ -277,7 +318,7 @@
      <property name="geometry">
       <rect>
        <x>9</x>
-       <y>190</y>
+       <y>230</y>
        <width>724</width>
        <height>24</height>
       </rect>
@@ -356,19 +397,6 @@
       <item>
        <widget class="QLineEdit" name="editAfter2"/>
       </item>
-      <item>
-       <widget class="QPushButton" name="buttAfter2">
-        <property name="maximumSize">
-         <size>
-          <width>40</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
     <widget class="QWidget" name="layoutWidget_3">
@@ -384,19 +412,6 @@
       <item>
        <widget class="QLineEdit" name="editBefore2"/>
       </item>
-      <item>
-       <widget class="QPushButton" name="buttBefore2">
-        <property name="maximumSize">
-         <size>
-          <width>40</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
     <widget class="QLabel" name="label_4">
@@ -409,7 +424,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>Prepared image before the flood: [pre-event]</string>
+      <string>Prepared Reference image:</string>
      </property>
     </widget>
     <widget class="QLabel" name="label_5">
@@ -422,14 +437,14 @@
       </rect>
      </property>
      <property name="text">
-      <string>Prepared image after the flood: [post-event]</string>
+      <string>Prepared Flood image:</string>
      </property>
     </widget>
     <widget class="QPushButton" name="pushButtLOAD2">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>190</y>
+       <y>230</y>
        <width>724</width>
        <height>24</height>
       </rect>
@@ -457,10 +472,36 @@
       <string>LOAD STEP RESULT TO QGIS</string>
      </property>
     </widget>
+    <widget class="QLineEdit" name="lineEditBefore2">
+     <property name="geometry">
+      <rect>
+       <x>650</x>
+       <y>90</y>
+       <width>81</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
+    <widget class="QLineEdit" name="lineEditAfter2">
+     <property name="geometry">
+      <rect>
+       <x>650</x>
+       <y>160</y>
+       <width>81</width>
+       <height>20</height>
+      </rect>
+     </property>
+     <property name="readOnly">
+      <bool>true</bool>
+     </property>
+    </widget>
    </widget>
    <widget class="QWidget" name="tab_step3">
     <attribute name="title">
-     <string>Step 3: Segmentation</string>
+     <string>Step 3: Filtering</string>
     </attribute>
     <widget class="QLabel" name="label_8">
      <property name="geometry">
@@ -488,26 +529,13 @@
       <item>
        <widget class="QLineEdit" name="editRGB3"/>
       </item>
-      <item>
-       <widget class="QPushButton" name="buttRGB3">
-        <property name="maximumSize">
-         <size>
-          <width>40</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
-      </item>
      </layout>
     </widget>
     <widget class="QPushButton" name="pushButtLOAD3">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>190</y>
+       <y>230</y>
        <width>724</width>
        <height>24</height>
       </rect>
@@ -535,6 +563,187 @@
       <string>LOAD STEP RESULT TO QGIS</string>
      </property>
     </widget>
+    <widget class="QCheckBox" name="checkBoxS3">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>110</y>
+       <width>151</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Advanced Settings</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>140</y>
+       <width>480</width>
+       <height>58</height>
+      </rect>
+     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_13">
+        <item>
+         <widget class="QLabel" name="label_12">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;RADIUS (Mean Filtering):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLCDNumber" name="lcdNumberRadius">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="intValue" stdset="0">
+           <number>5</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSlider" name="sliderMeanFiltRadius">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="minimum">
+           <number>5</number>
+          </property>
+          <property name="maximum">
+           <number>10</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout_14">
+        <item>
+         <widget class="QLabel" name="label_13">
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="text">
+           <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;RANGE (Mean Filtering):&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QLCDNumber" name="lcdNumberRange">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+            <weight>75</weight>
+            <bold>true</bold>
+           </font>
+          </property>
+          <property name="intValue" stdset="0">
+           <number>15</number>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QSlider" name="sliderMeanFiltRange">
+          <property name="enabled">
+           <bool>false</bool>
+          </property>
+          <property name="minimumSize">
+           <size>
+            <width>200</width>
+            <height>0</height>
+           </size>
+          </property>
+          <property name="maximumSize">
+           <size>
+            <width>200</width>
+            <height>16777215</height>
+           </size>
+          </property>
+          <property name="font">
+           <font>
+            <pointsize>9</pointsize>
+           </font>
+          </property>
+          <property name="minimum">
+           <number>15</number>
+          </property>
+          <property name="maximum">
+           <number>30</number>
+          </property>
+          <property name="orientation">
+           <enum>Qt::Horizontal</enum>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+     </layout>
+    </widget>
    </widget>
    <widget class="QWidget" name="tab_step4">
     <attribute name="title">
@@ -551,20 +760,7 @@
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_10">
       <item>
-       <widget class="QLineEdit" name="editSHPClassif"/>
-      </item>
-      <item>
-       <widget class="QPushButton" name="buttSHPClassif">
-        <property name="maximumSize">
-         <size>
-          <width>40</width>
-          <height>16777215</height>
-         </size>
-        </property>
-        <property name="text">
-         <string>...</string>
-        </property>
-       </widget>
+       <widget class="QLineEdit" name="editRGB4"/>
       </item>
      </layout>
     </widget>
@@ -578,8 +774,139 @@
       </rect>
      </property>
      <property name="text">
-      <string>SHP for classification:</string>
+      <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;RGB for classification:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
      </property>
+    </widget>
+    <widget class="QPushButton" name="pushButtLOAD4">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>230</y>
+       <width>724</width>
+       <height>24</height>
+      </rect>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>2000</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>LOAD STEP RESULT TO QGIS</string>
+     </property>
+    </widget>
+    <widget class="QCheckBox" name="checkBoxS4">
+     <property name="geometry">
+      <rect>
+       <x>10</x>
+       <y>110</y>
+       <width>151</width>
+       <height>17</height>
+      </rect>
+     </property>
+     <property name="text">
+      <string>Advanced Settings</string>
+     </property>
+    </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>30</x>
+       <y>140</y>
+       <width>478</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_12">
+      <item>
+       <widget class="QLabel" name="label_11">
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+        <property name="text">
+         <string>&lt;html&gt;&lt;head/&gt;&lt;body&gt;&lt;p&gt;Number of classes for KMeans:&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLCDNumber" name="lcdNumberKMeans">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+          <weight>75</weight>
+          <bold>true</bold>
+         </font>
+        </property>
+        <property name="intValue" stdset="0">
+         <number>4</number>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QSlider" name="sliderKMeans">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="minimumSize">
+         <size>
+          <width>200</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>200</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>9</pointsize>
+         </font>
+        </property>
+        <property name="minimum">
+         <number>4</number>
+        </property>
+        <property name="maximum">
+         <number>10</number>
+        </property>
+        <property name="value">
+         <number>4</number>
+        </property>
+        <property name="orientation">
+         <enum>Qt::Horizontal</enum>
+        </property>
+        <property name="tickPosition">
+         <enum>QSlider::TicksBelow</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
    </widget>
   </widget>
@@ -587,9 +914,9 @@
    <property name="geometry">
     <rect>
      <x>700</x>
-     <y>270</y>
+     <y>310</y>
      <width>60</width>
-     <height>81</height>
+     <height>91</height>
     </rect>
    </property>
    <property name="maximumSize">
@@ -614,9 +941,9 @@ STEP</string>
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>270</y>
+     <y>310</y>
      <width>681</width>
-     <height>81</height>
+     <height>91</height>
     </rect>
    </property>
    <property name="readOnly">
@@ -627,7 +954,7 @@ STEP</string>
    <property name="geometry">
     <rect>
      <x>10</x>
-     <y>360</y>
+     <y>410</y>
      <width>751</width>
      <height>26</height>
     </rect>
