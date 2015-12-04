@@ -18,10 +18,17 @@
  *                                                                         *
  ***************************************************************************/
 """
-
+# Shapefile imports
 from osgeo import ogr
+from osgeo import gdal
 import numpy as np
 import osr
+
+# PolyWorker imports
+from qgis.core import *
+from PyQt4 import QtCore, QtGui
+import traceback
+import time
 
 class Shapefile():
     '''Polygon utilites'''
@@ -60,7 +67,7 @@ class Shapefile():
     def getBBOX(self, big):
         try:
 			# Read SHP Features
-			driver = ogr.GetDriverByName('ESRI Shapefile')
+			driver = ogr.GetDriverByName('ESRI Shapefile')			
 			dataSource = driver.Open(self.shpFile, 0)
 			inLayer = dataSource.GetLayer()
 			
@@ -72,8 +79,13 @@ class Shapefile():
 			# Calculate convex hull and BBOX
 			convexhull = geomcol.ConvexHull()
 			env = convexhull.GetEnvelope()
-			if big: 	barda = 0.2  # 22Km margin aprox
-			else:		barda = 0.02 # 2.2Km margin aprox
+			print 'ENVELOPE: '+str(env)
+			if sum(env) == 0: return False
+			
+			if big == True: 	
+				barda = float(0.2)  # 22Km margin aprox
+			else:				
+				barda = float(0.02) # 2.2Km margin aprox
 			area = self.getAreaBBOX(env, barda)
 			if (area > 10000): 
 				print "AREA is too big, try entering another polygon"

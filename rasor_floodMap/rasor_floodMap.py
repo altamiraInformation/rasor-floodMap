@@ -28,6 +28,9 @@ from PyQt4 import QtCore, QtGui
 from qgis.core import *
 import qgis.utils
 from qgis.gui import QgsMessageBar
+from osgeo import gdal
+from osgeo import ogr
+import osr
 
 # Custom imports RASOR
 from rasor_flood_api import StepWorker
@@ -98,6 +101,12 @@ class rasor:
 	self.dlg.tabSteps.currentChanged.connect(self.tabChanged)
 	self.tabChanged()
 	
+	# Blue info
+	self.dlg.polygonReference.setStyleSheet("color: rgb(0, 0, 255);")
+	self.dlg.polygonFlood.setStyleSheet("color: rgb(0, 0, 255);")
+	self.dlg.lineEditBefore.setStyleSheet("color: rgb(0, 0, 255);")
+	self.dlg.lineEditAfter.setStyleSheet("color: rgb(0, 0, 255);")
+
 	# Connect signals/slots
 	self.dlg.connect(self.dlg.pushButtRUN, SIGNAL("clicked()"), self.buttRUNCLICK)
 	self.dlg.editS1Path.clear()
@@ -126,6 +135,7 @@ class rasor:
 	self.dlg.editAOI.clear()
 	self.dlg.editAOI.setReadOnly(1)
 	self.dlg.connect(self.dlg.buttAOI, SIGNAL("clicked()"), self.buttAfterAOI)
+	self.dlg.connect(self.dlg.pushButtLOAD0, SIGNAL("clicked()"), self.loadStep0QGIS)
 	self.dlg.connect(self.dlg.pushButtLOAD1, SIGNAL("clicked()"), self.loadStep1QGIS)
 	self.dlg.connect(self.dlg.pushButtLOAD2, SIGNAL("clicked()"), self.loadStep2QGIS)
 	self.dlg.connect(self.dlg.pushButtLOAD3, SIGNAL("clicked()"), self.loadStep3QGIS)
@@ -191,23 +201,31 @@ class rasor:
 	    if file_path:
 			self.dlg.editBefore1.setText(file_path)
 			maniReader=Manifest(file_path)
-			dateBefore=maniReader.parseXML()			
-			self.dlg.lineEditBefore.setText(dateBefore)	
-			self.dlg.lineEditBefore2.setText(dateBefore)	
+			maniReader.parseXML()			
+			self.dlg.lineEditBefore.setText(maniReader.getTime())			
+			self.dlg.polygonReference.setText(maniReader.getFootprint())
     def buttAfterCLICK1(self):
 	    file_path = self.tr(QFileDialog.getOpenFileName(self.dlg, "Select S1 image manifest file_path", self.getWDIR(), "S1 manifest files (manifest.safe)"))
 	    if file_path:
 			self.dlg.editAfter1.setText(file_path)
 			maniReader=Manifest(file_path)
-			dateAfter=maniReader.parseXML()
-			self.dlg.lineEditAfter.setText(dateAfter)
-			self.dlg.lineEditAfter2.setText(dateAfter)    
+			maniReader.parseXML()
+			self.dlg.lineEditAfter.setText(maniReader.getTime())			
+			self.dlg.polygonFlood.setText(maniReader.getFootprint())
     def buttAfterAOI(self):
 	    shp_file = self.tr(QFileDialog.getOpenFileName(self.dlg, "Select Area of Interest SHP", self.getWDIR(), "ESRI Shapefile (*.shp)"))	    
 	    if shp_file: 
 			self.dlg.editAOI.setText(shp_file)
 			s = QSettings()
 			s.setValue("rasor_floodMap/shp_path", shp_file)
+    def loadStep0QGIS(self):
+		file1=self.get_image_before_s1()
+		file2=self.get_image_after_s1()
+		if file1 != None and file2 != None:
+			self.unload_layer("S1-SAR-images")
+			self.load_footprint_QGIS()	
+		else:
+			self.show_error('Please select two valid Sentinel-1 manifest files first')
     def loadStep1QGIS(self):
 		file1=self.get_out_path()+"/STEP1/Reference-Subset-TC.tif"
 		file2=self.get_out_path()+"/STEP1/Flood-Subset-TC.tif"
@@ -254,7 +272,9 @@ class rasor:
 					shader.setRasterShaderFunction(fcn)
 					renderer = QgsSingleBandPseudoColorRenderer(rlayer.dataProvider(), 1, shader)
 					rlayer.setRenderer(renderer)
+
 				# Add layer				
+				rlayer.renderer().setOpacity(0.5)
 				QgsMapLayerRegistry.instance().addMapLayer(rlayer)
 				qgis.utils.iface.zoomToActiveLayer()				
 		else:
@@ -295,9 +315,52 @@ class rasor:
 				# Render to QGIS
 				myRenderer = QgsCategorizedSymbolRendererV2('CLASS', categories)
 				slayer.setRendererV2(myRenderer)
+				slayer.setLayerTransparency(50)
 				QgsMapLayerRegistry.instance().addMapLayer(slayer)
+				qgis.utils.iface.zoomToActiveLayer()
 		else:
 			self.show_error('The file_path '+fileName+' does not exist. Please check your working directory.')
+
+	# Read Shapefile and load it to QGIS
+    def load_shp_QGIS_simple(self, fileName):
+		if os.path.exists(fileName):
+			fileInfo = QFileInfo(fileName)
+			baseName = fileInfo.baseName()
+			slayer = QgsVectorLayer(fileName, baseName, "ogr")	
+			if not slayer.isValid():
+				print "Unable to load shp layer: "+fileName
+			else:
+				slayer.setLayerTransparency(50)
+				QgsMapLayerRegistry.instance().addMapLayer(slayer)
+				qgis.utils.iface.zoomToActiveLayer()
+		else:
+			self.show_error('The file_path '+fileName+' does not exist. Please check your working directory.')
+
+	# Read Shapefile and load it to QGIS
+    def load_footprint_QGIS(self):
+		footprint1=self.get_polygon_reference()
+		footprint2=self.get_polygon_flood()
+		if footprint1 and footprint2:
+			footLayer=QgsVectorLayer("Polygon?crs=EPSG:4326", "S1-SAR-images", "memory")
+			wkt1="POLYGON (("+footprint1+"))"
+			print wkt1
+			geom1=QgsGeometry.fromWkt(wkt1)
+			feat1 = QgsFeature()
+			feat1.setGeometry(geom1) 
+			wkt2="POLYGON (("+footprint2+"))"
+			geom2=QgsGeometry.fromWkt(wkt2)
+			feat2 = QgsFeature()
+			feat2.setGeometry(geom2) 			
+			footLayer.updateExtents()
+			footLayer.dataProvider().addFeatures([feat1, feat2])
+			footLayer.setLayerTransparency(70)
+			sym=footLayer.rendererV2().symbols()
+			symbol = sym[0]
+			symbol.setColor(QtGui.QColor.fromRgb(220,220,220))
+			QgsMapLayerRegistry.instance().addMapLayer(footLayer)
+			qgis.utils.iface.zoomToActiveLayer()
+		else:
+			self.show_error('No valid Sentinel-1 footprint was found for the images provided')			
 
 	# Run function
     def buttRUNCLICK(self):
@@ -307,19 +370,23 @@ class rasor:
 			print 'Running Step 1: Calibration -> Orthorectification -> Speckle filtering'
 			self.unload_layer("Reference-Subset-TC")
 			self.unload_layer("Flood-Subset-TC")
+			self.step=1
 			self.run_step_1()
 	    if index == 2:
 			print 'Running Step 2: RGB composition -> Change detection'
 			self.unload_layer("RGB")
+			self.step=2
 			self.run_step_2()
 	    if index == 3:
-			print 'Running Step 3: Segmentation'
+			print 'Running Step 3: Filtering'
 			self.unload_layer("RGB-Mean")
+			self.step=3
 			self.run_step_3()
 	    if index == 4:
 			print 'Running Step 4: Classification'	
 			self.unload_layer("RGB-Class")
-			self.run_step_4()
+			self.step=4
+			self.run_step_4()				
 
 	# Get working directory
     def getWDIR(self):
@@ -329,7 +396,22 @@ class rasor:
 		return wdir	
     def getRootDIR(self):
 		return os.path.abspath(os.sep)
-		
+	
+	# Setup automatically the files for SX
+    def autoFilesS2(self):
+		output_path=self.get_out_path()
+		if os.path.exists(output_path+'/STEP1/Reference-Subset.tif') and os.path.exists(output_path+'/STEP1/Flood-Subset.tif'):	
+			self.dlg.editBefore2.setText(output_path+'/STEP1/Reference-Subset.tif')
+			self.dlg.editAfter2.setText(output_path+'/STEP1/Flood-Subset.tif')
+    def autoFilesS3(self):
+		output_path=self.get_out_path()
+		if os.path.exists(output_path+'/STEP2/RGB.tif'):	
+			self.dlg.editRGB3.setText(output_path+'/STEP2/RGB.tif')
+    def autoFilesS4(self):
+		output_path=self.get_out_path()
+		if os.path.exists(output_path+'/STEP3/RGB-Mean.tif'):	
+			self.dlg.editRGB4.setText(output_path+'/STEP3/RGB-Mean.tif')			
+
 	# Called on tab changed event
     def tabChanged(self):
 		# Check if config is filled
@@ -348,14 +430,13 @@ class rasor:
 		if index == 1:
 			self.dlg.textBrowser.setText("<b><font color=\"green\">INPUT:</font></b><br/>Two <b>manifest</b> files from Sentinel-1 Images, one before the flood event (Reference) and one after (Flood).<br/><br/><b><font color=\"green\">OUTPUT:</font></b><br/>The two images calibrated, orthorectified and subsetted by the polygon bounding box specified in the CONFIG tab in GeoTIFF format.")
 		if index == 2:
-			self.dlg.editBefore2.setText(output_path+'/STEP1/Reference-Subset.tif')
-			self.dlg.editAfter2.setText(output_path+'/STEP1/Flood-Subset.tif')
+			self.autoFilesS2()
 			self.dlg.textBrowser.setText("<b><font color=\"green\">INPUT:</font></b><br/>Two <b>Geotiff</b> images alredy processed in the previous step with their associated dates of acquisition.<br/><br/><b><font color=\"green\">OUTPUT:</font></b><br/>One <b>GeoTiff</b> RGB composition ready for change detection.")
 		if index == 3:
-			self.dlg.editRGB3.setText(output_path+'/STEP2/RGB.tif')
+			self.autoFilesS3()
 			self.dlg.textBrowser.setText("<b><font color=\"green\">INPUT:</font></b><br/>One RGB <b>Geotiff</b> image with the change detection information from the previous step <br/><br/><b><font color=\"green\">OUTPUT:</font></b><br/>One RGB <b>Geotiff</b> with the segmentation output")
 		if index == 4:
-			self.dlg.editRGB4.setText(output_path+'/STEP3/RGB-Mean.tif')
+			self.autoFilesS4()
 			self.dlg.textBrowser.setText("<b><font color=\"green\">INPUT:</font></b><br/>One RGB <b>Geotiff</b> image for the classification<br/><br/><b><font color=\"green\">OUTPUT:</font></b><br/>One <b>Shapefile</b> with the classes")
 
     # Called on error
@@ -410,19 +491,49 @@ class rasor:
 		self.threadGUI = threadGUI
 		self.workerGUI = workerGUI
 
+	# Run S1-TBX on a separate thread
+    def startPolyWorker(self, band, outLayer):
+		# create a new worker instance		
+		workerGUI = PolyWorker(band, outLayer)
+
+		# configure the QgsMessageBar
+		messageBar = self.iface.messageBar().createMessage('Working ...', )
+		cancelButton = QtGui.QPushButton()
+		cancelButton.setText('Cancel')				
+		messageBar.layout().addWidget(cancelButton)
+		self.iface.messageBar().pushWidget(messageBar, self.iface.messageBar().INFO)
+		self.messageBar = messageBar
+
+		# Start the worker in a new thread
+		threadGUI = QtCore.QThread()
+		workerGUI.moveToThread(threadGUI)
+		#workerGUI.finishSIGNAL.connect(self.workerFinishedSLOT)
+		#workerGUI.errorSIGNAL.connect(self.workerErrorSLOT)
+
+		# Launch
+		threadGUI.started.connect(workerGUI.run)
+		threadGUI.start()
+		self.threadGUIP = threadGUI
+		self.workerGUIP = workerGUI
+
 	# SLOT: Task finished
     def workerFinishedSLOT(self, ret):
 		print 'FINISHED:' + str(ret)
+		self.workerGUI.deleteLater()
+		self.threadGUI.quit()
+		self.threadGUI.wait()
+		self.threadGUI.deleteLater()
+
 		# remove widget from message bar
 		self.iface.messageBar().clearWidgets()
 		if ret is True:
 			# notify the user that finished OK
 			self.iface.messageBar().pushMessage('FloodMap Plugin finished [OK]', level=QgsMessageBar.INFO, duration=3)		
-			# Clean up the worker and thread
-			self.workerGUI.deleteLater()
-			self.threadGUI.quit()
-			self.threadGUI.wait()
-			self.threadGUI.deleteLater()
+			# switch step
+			if self.step == 1: self.loadStep1QGIS()
+			if self.step == 2: self.loadStep2QGIS()
+			if self.step == 3: self.loadStep3QGIS()
+			if self.step == 4: self.loadStep4QGIS()
 		else:
 			# notify the user that finished ERROR
 			self.iface.messageBar().pushMessage('FloodMap Plugin finished [ERROR]', level=QgsMessageBar.CRITICAL, duration=3)			
@@ -517,6 +628,10 @@ class rasor:
 		return self.dlg.editRGB3.text()
     def get_image_rgb4(self):
 		return self.dlg.editRGB4.text()
+    def get_polygon_flood(self):
+		return self.dlg.polygonFlood.text()
+    def get_polygon_reference(self):
+		return self.dlg.polygonReference.text()
     def get_nclass(self):
 		return self.dlg.sliderKMeans.value()
     def get_filtradius(self):
@@ -539,15 +654,15 @@ class rasor:
 		# Parameters check
 		if (s1tbx_path is None) or (output_path is None) or (bbox is None) or (bbox_big is None):
 			self.show_error('Please fill in the parameters in the CONFIG tab')
-			return #Params fail
+			return False #Params fail
 
 		if (date_after is None) or (date_before is None) or (image_after is None) or (image_before is None):
 			self.show_error('Please select two valid Sentinel-1 manifest files')
-			return # Dates fail
+			return False # Dates fail
 
-		if (bbox == -1):
+		if (bbox_big == -1):
 			self.show_error('Please provide a smaller polygon (shapefile in the CONF tab)')
-			return # Area fail
+			return False # Area fail
 		
 		# Create folder
 		outdir=output_path.replace('\\', '\\\\')+"/STEP1"
@@ -578,15 +693,15 @@ class rasor:
 		# Parameters check
 		if (s1tbx_path is None) or (output_path is None) or (s1tbx_path == "") or (output_path == ""):
 			self.show_error('Please fill in the parameters in the CONFIG tab')
-			return #Params fail
+			return False #Params fail
 
 		if (date_after is None) or (date_before is None) or (date_after == "") or (date_before == ""):
 			self.show_error('Please select two valid Sentinel-1 manifest files in the Step 1 tab')
-			return # Dates fail			
+			return False # Dates fail			
 
 		if (image_after is None) or (image_before is None) or (image_after == "") or (image_before == ""):
 			self.show_error('Please select two valid geotiff files (Reference-Subset.tif/Flood-Subset.tif)')
-			return # Images fail	
+			return False # Images fail	
 		
 		# Create folder
 		outdir=output_path.replace('\\', '\\\\')+"/STEP2"
@@ -610,7 +725,8 @@ class rasor:
 		image_rgb_cd=self.get_image_rgb3()
 		fradius=self.get_filtradius()
 		frange=self.get_filtrange()
-		if (orfeo_path is None) or (output_path is None) or (image_rgb_cd is None):	return #Params check
+		if (orfeo_path is None) or (output_path is None) or (image_rgb_cd is None):	
+			return False #Params check
 		
 		# Create folder
 		outdir=output_path.replace('\\', '\\\\')+"/STEP3"
@@ -633,7 +749,8 @@ class rasor:
 		output_path=self.get_out_path()
 		image_rgb_class=self.get_image_rgb4()
 		classes=self.get_nclass()
-		if (orfeo_path is None) or (output_path is None) or (image_rgb_class is None):	return #Params check
+		if (orfeo_path is None) or (output_path is None) or (image_rgb_class is None):	
+			return False #Params check
 		
 		# Create folder
 		outdir=output_path.replace('\\', '\\\\')+"/STEP4"

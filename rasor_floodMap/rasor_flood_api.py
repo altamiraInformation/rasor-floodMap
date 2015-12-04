@@ -24,6 +24,8 @@ from qgis.core import *
 from PyQt4 import QtCore, QtGui
 
 from osgeo import gdal
+from osgeo import ogr
+import osr
 import os, subprocess, traceback, tempfile, contextlib, time, signal, ctypes, array
 
 # Local imports
@@ -98,15 +100,29 @@ class StepWorker(QtCore.QObject):
 			line = ""
 			while pro.poll() is None:
 				line = pro.stdout.readline()
-				# Percent
-				per=self.get_percent(line)
-				if per:	self.progressSIGNAL.emit(per)
 				# Info
 				self.infoSIGNAL.emit(info+'<br>'+line)
     
-    # Get percent
-    def get_percent(self, msg):		
-		return None
+	# Polygonize task (GDAL)
+    def polygonize(self, out_shp, in_tiff):
+		# Input GTiff
+		src_ds = gdal.Open(in_tiff)
+		band = src_ds.GetRasterBand(1)
+		bandArray = band.ReadAsArray()
+		# Output SHP file
+		drv = ogr.GetDriverByName("ESRI Shapefile")
+		if os.path.exists(out_shp):
+			drv.DeleteDataSource(out_shp)
+		# Projection
+		dst_ds = drv.CreateDataSource(out_shp)
+		srs_in = osr.SpatialReference()
+		srs_in.ImportFromWkt(src_ds.GetProjectionRef())
+		# Output Layer
+		outDatasource = drv.CreateDataSource(out_shp)
+		outLayer = outDatasource.CreateLayer("class_polygons", srs=srs_in)
+		newField = ogr.FieldDefn('CLASS', ogr.OFTInteger)
+		outLayer.CreateField(newField)
+		gdal.Polygonize(band, None, outLayer, 0, [], callback=None)	
 
 	# Run S1-CMD
     def run(self):
@@ -134,9 +150,8 @@ class StepWorker(QtCore.QObject):
 				self.execute(args2, mod_env, tmpdir, 'Subsetting + Orthorectification ... ')
 
 			if self.subcmd == 'KMeansClassification':
-				geo = GeoTiff(self.outdir+'/RGB-Mean-Kmeans.tif') 
-				geo.polygonize(self.outdir+'/RGB-Class.shp')
-				shp=Shapefile(self.outdir+'/RGB-Class.shp')
+				print 'polygonize ...'
+				self.polygonize(self.outdir+'/RGB-Class.shp', self.outdir+'/RGB-Mean-Kmeans.tif')
 
         except Exception, e:  
 			# Inform the user in the console
@@ -146,6 +161,7 @@ class StepWorker(QtCore.QObject):
             self.ret = False
 		
 		# Finished
+        print 'Thread finished!'
         self.finishSIGNAL.emit(self.ret)
 		
 	# Slot definition (Abort)

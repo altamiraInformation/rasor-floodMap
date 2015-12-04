@@ -57,7 +57,7 @@
     <locale language="English" country="UnitedStates"/>
    </property>
    <property name="currentIndex">
-    <number>3</number>
+    <number>4</number>
    </property>
    <widget class="QWidget" name="confTab">
     <attribute name="title">
@@ -249,7 +249,7 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>100</y>
+       <y>110</y>
        <width>231</width>
        <height>17</height>
       </rect>
@@ -264,7 +264,7 @@
        <x>10</x>
        <y>50</y>
        <width>721</width>
-       <height>29</height>
+       <height>26</height>
       </rect>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout">
@@ -290,9 +290,9 @@
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>120</y>
+       <y>130</y>
        <width>721</width>
-       <height>29</height>
+       <height>26</height>
       </rect>
      </property>
      <layout class="QHBoxLayout" name="horizontalLayout_2">
@@ -343,42 +343,169 @@
       </font>
      </property>
      <property name="text">
-      <string>LOAD STEP RESULT TO QGIS</string>
+      <string>LOAD STEP RESULT</string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEditBefore">
+    <widget class="QPushButton" name="pushButtLOAD0">
      <property name="geometry">
       <rect>
-       <x>600</x>
-       <y>90</y>
-       <width>81</width>
-       <height>20</height>
+       <x>10</x>
+       <y>200</y>
+       <width>724</width>
+       <height>24</height>
       </rect>
      </property>
-     <property name="readOnly">
-      <bool>true</bool>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Expanding">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>2000</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="font">
+      <font>
+       <pointsize>10</pointsize>
+       <weight>75</weight>
+       <bold>true</bold>
+      </font>
+     </property>
+     <property name="text">
+      <string>LOAD SENTINEL-1 IMAGES COVERAGE </string>
      </property>
     </widget>
-    <widget class="QLineEdit" name="lineEditAfter">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
-       <x>600</x>
+       <x>50</x>
        <y>160</y>
-       <width>81</width>
-       <height>20</height>
+       <width>633</width>
+       <height>22</height>
       </rect>
      </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_15">
+      <item>
+       <widget class="QLineEdit" name="polygonFlood">
+        <property name="minimumSize">
+         <size>
+          <width>550</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>550</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEditAfter">
+        <property name="minimumSize">
+         <size>
+          <width>75</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>75</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
+    <widget class="QWidget" name="layoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>50</x>
+       <y>80</y>
+       <width>633</width>
+       <height>22</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_16">
+      <item>
+       <widget class="QLineEdit" name="polygonReference">
+        <property name="minimumSize">
+         <size>
+          <width>550</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>550</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <widget class="QLineEdit" name="lineEditBefore">
+        <property name="minimumSize">
+         <size>
+          <width>75</width>
+          <height>0</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>75</width>
+          <height>16777215</height>
+         </size>
+        </property>
+        <property name="font">
+         <font>
+          <pointsize>8</pointsize>
+         </font>
+        </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+    <zorder>layoutWidget</zorder>
+    <zorder>layoutWidget</zorder>
     <zorder>layoutWidget</zorder>
     <zorder>layoutWidget</zorder>
     <zorder>label</zorder>
     <zorder>label_2</zorder>
     <zorder>pushButtLOAD1</zorder>
-    <zorder>lineEditBefore</zorder>
-    <zorder>lineEditAfter</zorder>
+    <zorder>pushButtLOAD0</zorder>
    </widget>
    <widget class="QWidget" name="tab_step2">
     <attribute name="title">
@@ -469,33 +596,7 @@
       </font>
      </property>
      <property name="text">
-      <string>LOAD STEP RESULT TO QGIS</string>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEditBefore2">
-     <property name="geometry">
-      <rect>
-       <x>650</x>
-       <y>90</y>
-       <width>81</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
-     </property>
-    </widget>
-    <widget class="QLineEdit" name="lineEditAfter2">
-     <property name="geometry">
-      <rect>
-       <x>650</x>
-       <y>160</y>
-       <width>81</width>
-       <height>20</height>
-      </rect>
-     </property>
-     <property name="readOnly">
-      <bool>true</bool>
+      <string>LOAD STEP RESULT </string>
      </property>
     </widget>
    </widget>
@@ -560,7 +661,7 @@
       </font>
      </property>
      <property name="text">
-      <string>LOAD STEP RESULT TO QGIS</string>
+      <string>LOAD STEP RESULT</string>
      </property>
     </widget>
     <widget class="QCheckBox" name="checkBoxS3">
@@ -806,7 +907,7 @@
       </font>
      </property>
      <property name="text">
-      <string>LOAD STEP RESULT TO QGIS</string>
+      <string>LOAD STEP RESULT</string>
      </property>
     </widget>
     <widget class="QCheckBox" name="checkBoxS4">
