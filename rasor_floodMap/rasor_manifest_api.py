@@ -22,8 +22,12 @@
 import xml.etree.ElementTree as ET
 from datetime import datetime, date, time
 
+#########################################################################################
+### Description: Class in order read Sentinel-1 manifest metadata
+#########################################################################################
+
 class Manifest():
-    '''Worker in order to run time-consuming tasks of S1-TBX'''
+
     def __init__(self, manifest_path):
         self.manifest_path = manifest_path
         self.footPrint = ''

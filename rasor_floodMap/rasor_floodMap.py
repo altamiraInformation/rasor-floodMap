@@ -56,6 +56,10 @@ from os.path import expanduser
 user=""
 pwd=""
 
+#########################################################################################
+### Description: Main class for the QT GUI interface
+#########################################################################################
+
 class rasor:
     """QGIS Plugin Implementation."""
 

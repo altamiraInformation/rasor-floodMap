@@ -30,8 +30,12 @@ from PyQt4 import QtCore, QtGui
 import traceback
 import time
 
+#########################################################################################
+### Description: Class in order to handle ESRI Shapefile (mainly get BBOX)
+#########################################################################################
+
 class Shapefile():
-    '''Polygon utilites'''
+
     def __init__(self, shp_path):
 		self.shpFile = shp_path
 

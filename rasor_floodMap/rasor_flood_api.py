@@ -32,6 +32,10 @@ import os, subprocess, traceback, tempfile, contextlib, time, signal, ctypes, ar
 from rasor_gtiff_api import GeoTiff
 from rasor_poly_api import Shapefile
 
+#########################################################################################
+### Description: Main class launch S1/Orfeo toolbox commands in a separate thread
+#########################################################################################
+
 class StepWorker(QtCore.QObject):
     '''Worker in order to run time-consuming tasks of S1-TBX'''
     def __init__(self, tbx, subcmd, tbx_dir, xmlFileB, xmlFileA, outdir):

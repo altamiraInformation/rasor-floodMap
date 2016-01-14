@@ -21,6 +21,9 @@
 
 import xml.etree.ElementTree as ET
 
+#########################################################################################
+### Description: Class in order to wrap the Sentinel-1 XML format needed for the 4 steps.
+#########################################################################################
 
 class StepOne:
     """

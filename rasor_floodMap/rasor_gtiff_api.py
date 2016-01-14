@@ -26,8 +26,12 @@ from osgeo import ogr
 import xml.etree.ElementTree as ET
 import os, osr
 
+#########################################################################################
+### Description: Class in order read Sentinel-1 manifest metadata
+#########################################################################################
+
 class GeoTiff():
-	'''Worker in order to run time-consuming tasks of S1-TBX'''
+
 	def __init__(self, gtiff_path):
 		self.gtiff_path = gtiff_path
 		self.PRIVATE_BEAM_TIFF_TAG_NUMBER = 65000
