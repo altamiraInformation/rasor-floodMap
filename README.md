@@ -11,6 +11,7 @@ Plugin developed for the FP7 RASOR Project (http://www.rasor-project.eu/)
 #### Important information:
 
 In order to work with big flooded areas memory tunning for SNAP must be set. 
+
 To do so, please edit (C:\Program Files\snap\bin\gpt.vmoptions) by **adding the following line at the end of the file**:
 
 -Xmx4096m
