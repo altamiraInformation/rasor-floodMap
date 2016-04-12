@@ -2,6 +2,8 @@
 
 Plugin developed for the FP7 RASOR Project (http://www.rasor-project.eu/)
 
+The RASOR flood map plugin is a QGIS (Quantum GIS) open-source plugin capable of extracting a flood map from a couple of Sentinel-1 Ground Range Detected (GRD) images with change detection techniques. The plugin uses other open-source software components such as SNAP and Orfeo Toolbox in order to make the analysis.
+
 #### Pre-requisites:
 
 + Windows 7 or higher (64-bit version)
@@ -18,7 +20,3 @@ To do so, please edit (C:\Program Files\snap\bin\gpt.vmoptions) by **adding the 
 -Xmx4096m
 
 ![alt tag](https://github.com/altamiraInformation/rasor-floodMap/blob/master/update_gpt.png)
-
-#### Main capabilites:
-
-The RASOR flood map plugin is a QGIS (Quantum GIS) open-source plugin capable of extracting a flood map from a couple of Sentinel-1 Ground Range Detected (GRD) images with change detection techniques. The plugin uses other open-source software components such as SNAP and Orfeo Toolbox in order to make the analysis.
