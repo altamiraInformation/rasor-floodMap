@@ -4,6 +4,7 @@ Plugin developed for the FP7 RASOR Project (http://www.rasor-project.eu/)
 
 #### Pre-requisites:
 
++ Windows 7 or higher (64-bit version)
 + ESA SNAP version 2.0.2 / Sentinel-1 Toolbox (http://step.esa.int/main/download/previous-versions/)
 + CNES Orfeo Toolbox OTB - MINGW package 5.2.0 (https://www.orfeo-toolbox.org/packages/OTB-5.2.1-win64.zip)
 + QGIS 2.6 or higher (http://www.qgis.org/es/site/)
