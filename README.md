@@ -1,4 +1,4 @@
-#### Synopsis
+#### Synopsis:
 
 Plugin developed for the FP7 RASOR Project (http://www.rasor-project.eu/)
 
